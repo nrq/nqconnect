@@ -22,9 +22,11 @@ import {
   LogOut,
   Moon,
   Sun,
+  Settings,
 } from "lucide-react";
 import type { Chat } from "@/lib/types";
-import { loggedInUser } from "@/lib/data";
+import { useAuth } from "@/context/auth-context";
+import Link from "next/link";
 
 interface ChatSidebarProps {
   chats: Chat[];
@@ -34,19 +36,22 @@ interface ChatSidebarProps {
 }
 
 export function ChatSidebar({ chats, onSelectChat, onSelectView, activeChatId }: ChatSidebarProps) {
+  const { user, logout } = useAuth();
   const privateChats = chats.filter((chat) => chat.type === 'private');
   const groupChats = chats.filter((chat) => chat.type === 'group');
+
+  if (!user) return null;
 
   return (
     <div className="flex h-full flex-col">
       <SidebarHeader>
         <div className="flex items-center gap-3 p-2">
           <Avatar className="h-12 w-12">
-            <AvatarImage src={loggedInUser.avatar} alt={loggedInUser.name} />
-            <AvatarFallback>{loggedInUser.name.charAt(0)}</AvatarFallback>
+            <AvatarImage src={user.avatar} alt={user.name} />
+            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <span className="font-headline text-lg font-semibold">{loggedInUser.name}</span>
+            <span className="font-headline text-lg font-semibold">{user.name}</span>
             <span className="text-xs text-muted-foreground">Online</span>
           </div>
         </div>
@@ -117,6 +122,14 @@ export function ChatSidebar({ chats, onSelectChat, onSelectView, activeChatId }:
                   Support
                 </SidebarMenuButton>
             </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link href="/settings">
+                <SidebarMenuButton className="w-full justify-start">
+                  <Settings />
+                  Settings
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
           </SidebarGroup>
 
         </SidebarMenu>
@@ -124,7 +137,7 @@ export function ChatSidebar({ chats, onSelectChat, onSelectView, activeChatId }:
 
       <SidebarFooter>
         <div className="flex items-center justify-between p-4">
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" onClick={logout}>
                 <LogOut />
             </Button>
             <div className="flex items-center gap-2">

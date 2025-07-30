@@ -1,6 +1,7 @@
 import type { User, Chat, CommunityEvent } from '@/lib/types';
 
-export const loggedInUser: User = {
+// This is now a template for new users, not the logged-in user.
+export const defaultUser: User = {
     id: 'user-0',
     name: 'Youssef',
     avatar: 'https://placehold.co/100x100/3CB371/FFFFFF?text=Y',
@@ -8,7 +9,6 @@ export const loggedInUser: User = {
 };
 
 export const users: User[] = [
-    loggedInUser,
     { id: 'user-1', name: 'Fatima Ahmed', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=FA', isOnline: true },
     { id: 'user-2', name: 'Omar Khan', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=OK', isOnline: false },
     { id: 'user-3', name: 'Aisha Dubois', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=AD', isOnline: true },
@@ -23,7 +23,7 @@ export const chats: Chat[] = [
         name: 'Fatima Ahmed',
         avatar: 'https://placehold.co/100x100/D4AF37/000000?text=FA',
         unreadCount: 2,
-        participants: [loggedInUser, users[1]],
+        participants: [defaultUser, users[0]],
         messages: [
             { id: 'msg-1', senderId: 'user-1', text: 'السلام عليكم! How are you?', timestamp: new Date(Date.now() - 1000 * 60 * 10), language: 'Arabic' },
             { id: 'msg-2', senderId: 'user-0', text: 'Wa alaikum assalam! I am fine, shukran. And you?', timestamp: new Date(Date.now() - 1000 * 60 * 8) },
@@ -37,7 +37,7 @@ export const chats: Chat[] = [
         name: 'Family Group',
         avatar: 'https://placehold.co/100x100/3CB371/FFFFFF?text=FG',
         unreadCount: 5,
-        participants: [loggedInUser, users[1], users[2], users[3]],
+        participants: [defaultUser, users[0], users[1], users[2]],
         messages: [
             { id: 'msg-5', senderId: 'user-2', text: 'Bonjour tout le monde!', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), language: 'French' },
             { id: 'msg-6', senderId: 'user-3', text: 'Bonjour Omar! Wie geht es Ihnen?', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 1), language: 'German' },
@@ -50,7 +50,7 @@ export const chats: Chat[] = [
         name: 'Layla Olsen',
         avatar: 'https://placehold.co/100x100/D4AF37/000000?text=LO',
         unreadCount: 0,
-        participants: [loggedInUser, users[5]],
+        participants: [defaultUser, users[4]],
         messages: [
              { id: 'msg-8', senderId: 'user-5', text: 'Hei! Hvordan går det?', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), language: 'Norwegian'},
              { id: 'msg-9', senderId: 'user-0', text: 'Hey Layla! It\'s going well, thanks!', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 23) },
@@ -81,3 +81,6 @@ export const events: CommunityEvent[] = [
         location: 'Islamic Cultural Center'
     }
 ];
+
+// Remove loggedInUser export
+// export const loggedInUser: User = { ... }
