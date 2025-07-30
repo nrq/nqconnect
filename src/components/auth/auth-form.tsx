@@ -119,7 +119,6 @@ export function AuthForm() {
             return;
         }
 
-
         try {
             generateRecaptcha();
             const verifier = window.recaptchaVerifier!;
@@ -271,7 +270,7 @@ export function AuthForm() {
                                             <FormControl>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select your class" />
-                                                </Trigger>
+                                                </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
                                                 <SelectItem value="hifz-al-quran">Hifz al-Quran (Memorization)</SelectItem>
@@ -326,7 +325,7 @@ export function AuthForm() {
                             </Button>
                         </form>
                     </Form>
-                )
+                );
         }
     }
     
@@ -364,5 +363,3 @@ export function AuthForm() {
         </Card>
     );
 }
-
-    
