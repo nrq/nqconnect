@@ -20,6 +20,7 @@ export interface Message {
   text: string;
   timestamp: Date;
   language?: 'Urdu' | 'Arabic' | 'Norwegian' | 'French' | 'German' | 'English';
+  imageUrl?: string;
 }
 
 export interface Chat {

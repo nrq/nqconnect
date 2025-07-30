@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Languages, Loader2 } from "lucide-react";
 import { getTranslation } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
+import Image from "next/image";
 import {
   Select,
   SelectContent,
@@ -47,7 +48,7 @@ export function ChatMessage({ message, sender, isOwnMessage }: ChatMessageProps)
     setIsTranslating(false);
   };
 
-  const isTranslatable = message.language && message.language !== "English" && !isOwnMessage;
+  const isTranslatable = message.text && message.language && message.language !== "English" && !isOwnMessage;
   const availableLanguages = ["English", "Urdu", "Arabic", "Norwegian", "French", "German"];
 
   return (
@@ -74,7 +75,12 @@ export function ChatMessage({ message, sender, isOwnMessage }: ChatMessageProps)
         {!isOwnMessage && sender && (
           <p className="text-sm font-semibold mb-1 text-primary">{sender.name}</p>
         )}
-        <p className="text-base">{message.text}</p>
+        {message.imageUrl && (
+            <div className="relative w-full aspect-video rounded-md overflow-hidden mb-2">
+                <Image src={message.imageUrl} alt="Sent image" layout="fill" objectFit="cover" data-ai-hint="chat image" />
+            </div>
+        )}
+        {message.text && <p className="text-base">{message.text}</p>}
         {translatedText && (
             <div className="border-t border-primary/20 mt-2 pt-2">
                 <p className="text-sm italic opacity-80">{translatedText}</p>
