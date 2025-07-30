@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,6 +13,10 @@ import { useAuth } from "@/context/auth-context";
 import { Loader2 } from "lucide-react";
 import { defaultUser } from "@/lib/data";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { auth } from "@/lib/firebase";
+import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from "firebase/auth";
+import { useToast } from "@/hooks/use-toast";
+
 
 const phoneRegex = new RegExp(
   /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
@@ -32,10 +36,18 @@ const detailsSchema = z.object({
     language: z.string().min(1, "Please select a language"),
 })
 
+declare global {
+    interface Window {
+        recaptchaVerifier?: RecaptchaVerifier;
+        confirmationResult?: ConfirmationResult;
+    }
+}
+
 export function AuthForm() {
     const [step, setStep] = useState<"phone" | "otp" | "details">("phone");
     const [isLoading, setIsLoading] = useState(false);
-    const { login } = useAuth();
+    const { login, user, firebaseUser, reloadUser } = useAuth();
+    const { toast } = useToast();
     
     const phoneForm = useForm<z.infer<typeof phoneSchema>>({
         resolver: zodResolver(phoneSchema),
@@ -60,42 +72,110 @@ export function AuthForm() {
         },
     });
 
+    useEffect(() => {
+        if (!window.recaptchaVerifier) {
+            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                'size': 'invisible',
+                'callback': (response: any) => {
+                    console.log("reCAPTCHA solved");
+                }
+            });
+        }
+    }, []);
+
+    useEffect(() => {
+        // If we have a firebaseUser but not a local profile, it means they are new
+        if (firebaseUser && !user) {
+            setStep("details");
+        }
+    }, [firebaseUser, user]);
+
+
     async function onPhoneSubmit(values: z.infer<typeof phoneSchema>) {
         setIsLoading(true);
-        // Simulate sending OTP
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        console.log("Sending OTP to:", values.phoneNumber);
-        setIsLoading(false);
-        setStep("otp");
+        try {
+            const verifier = window.recaptchaVerifier!;
+            const confirmationResult = await signInWithPhoneNumber(auth, values.phoneNumber, verifier);
+            window.confirmationResult = confirmationResult;
+            toast({
+                title: "Code Sent",
+                description: "A verification code has been sent to your phone.",
+            });
+            setStep("otp");
+        } catch (error: any) {
+            console.error("SMS Error:", error);
+            toast({
+                variant: "destructive",
+                title: "Error Sending Code",
+                description: error.message || "Could not send verification code. Please try again.",
+            });
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     async function onOtpSubmit(values: z.infer<typeof otpSchema>) {
         setIsLoading(true);
-        // Simulate verifying OTP
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        console.log("Verifying OTP:", values.otp);
-        setIsLoading(false);
-        // Check if user is "new" by seeing if they have a class selected.
-        // In a real app, you'd check your database. For this prototype,
-        // we assume a user is new if they don't have a Quran class assigned in the default data.
-        if (defaultUser.quranClass) {
-            login(defaultUser);
-        } else {
-            setStep("details");
+        try {
+            const confirmationResult = window.confirmationResult;
+            if (!confirmationResult) {
+                throw new Error("No confirmation result found. Please try sending the code again.");
+            }
+            const result = await confirmationResult.confirm(values.otp);
+            
+            // The onAuthStateChanged listener in AuthProvider will handle the rest.
+            // It will check if the user has a profile and either log them in or show the details form.
+             toast({
+                title: "Verification Successful!",
+                description: "You have been signed in.",
+            });
+
+            // We need to give onAuthStateChanged a moment to get the new user and check for a profile
+            await reloadUser();
+            
+        } catch (error: any) {
+            console.error("OTP Error:", error);
+             toast({
+                variant: "destructive",
+                title: "Verification Failed",
+                description: "The code you entered is incorrect. Please try again.",
+            });
+        } finally {
+            setIsLoading(false);
         }
     }
 
     async function onDetailsSubmit(values: z.infer<typeof detailsSchema>) {
         setIsLoading(true);
-        // Simulate saving details and logging in
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        const finalUser = {
-            ...defaultUser,
-            ...values,
-            language: values.language as any,
-        };
-        console.log("Saving user details:", finalUser);
-        login(finalUser);
+        try {
+            if (!firebaseUser) {
+                throw new Error("You are not signed in. Please restart the login process.");
+            }
+            const finalUser: User = {
+                id: firebaseUser.uid,
+                name: firebaseUser.phoneNumber || "New User", // Use phone number as default name
+                avatar: `https://placehold.co/100x100/3CB371/FFFFFF?text=${(firebaseUser.phoneNumber || "U").slice(-2)}`,
+                isOnline: true,
+                role: 'user', // All new users are 'user' role
+                status: 'active',
+                storage: { used: 0, total: 100 }, // Default storage
+                ...values,
+                language: values.language as any,
+            };
+            console.log("Saving user details:", finalUser);
+            // This `login` function now saves the profile to localStorage
+            login(finalUser);
+             toast({
+                title: "Registration Complete!",
+                description: "Welcome to NQSalam.",
+            });
+        } catch (error: any) {
+             toast({
+                variant: "destructive",
+                title: "Registration Failed",
+                description: error.message || "Could not save your details.",
+            });
+        }
         setIsLoading(false);
     }
 
@@ -112,7 +192,7 @@ export function AuthForm() {
                                     <FormItem>
                                         <FormLabel>Phone Number</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="+1 (555) 123-4567" {...field} />
+                                            <Input placeholder="+15551234567" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -254,6 +334,7 @@ export function AuthForm() {
             </CardHeader>
             <CardContent>
                 {renderStep()}
+                <div id="recaptcha-container" className="mt-4"></div>
             </CardContent>
         </Card>
     );

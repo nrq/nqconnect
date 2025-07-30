@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -152,6 +153,7 @@ export function ChatSidebar({ chats, onSelectChat, onSelectView, activeChatId, a
         <div className="flex items-center justify-between p-4">
             <Button variant="ghost" size="icon" onClick={logout}>
                 <LogOut />
+                 <span className="sr-only">Log Out</span>
             </Button>
             <div className="flex items-center gap-2">
                 <Sun className="h-5 w-5" />
