@@ -22,21 +22,21 @@ export default function TermsPage() {
             <CardTitle>Last updated: {new Date().toLocaleDateString()}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p>Welcome to NurulQuranConnect!</p>
-            <p>These terms and conditions outline the rules and regulations for the use of NurulQuranConnect's Website, located at nqc.app.</p>
-            <p>By accessing this website we assume you accept these terms and conditions. Do not continue to use NurulQuranConnect if you do not agree to take all of the terms and conditions stated on this page.</p>
+            <p>Welcome to NQSalam!</p>
+            <p>These terms and conditions outline the rules and regulations for the use of NQSalam's Website, located at nqsalam.app.</p>
+            <p>By accessing this website we assume you accept these terms and conditions. Do not continue to use NQSalam if you do not agree to take all of the terms and conditions stated on this page.</p>
             <h2 className="text-xl font-bold">License</h2>
-            <p>Unless otherwise stated, NurulQuranConnect and/or its licensors own the intellectual property rights for all material on NurulQuranConnect. All intellectual property rights are reserved. You may access this from NurulQuranConnect for your own personal use subjected to restrictions set in these terms and conditions.</p>
+            <p>Unless otherwise stated, NQSalam and/or its licensors own the intellectual property rights for all material on NQSalam. All intellectual property rights are reserved. You may access this from NQSalam for your own personal use subjected to restrictions set in these terms and conditions.</p>
             <p>You must not:</p>
             <ul className="list-disc pl-6 space-y-1">
-                <li>Republish material from NurulQuranConnect</li>
-                <li>Sell, rent or sub-license material from NurulQuranConnect</li>
-                <li>Reproduce, duplicate or copy material from NurulQuranConnect</li>
-                <li>Redistribute content from NurulQuranConnect</li>
+                <li>Republish material from NQSalam</li>
+                <li>Sell, rent or sub-license material from NQSalam</li>
+                <li>Reproduce, duplicate or copy material from NQSalam</li>
+                <li>Redistribute content from NQSalam</li>
             </ul>
             <h2 className="text-xl font-bold">User Comments</h2>
             <p>This Agreement shall begin on the date hereof.</p>
-            <p>Parts of this website offer an opportunity for users to post and exchange opinions and information in certain areas of the website. NurulQuranConnect does not filter, edit, publish or review Comments prior to their presence on the website. Comments do not reflect the views and opinions of NurulQuranConnect, its agents and/or affiliates. Comments reflect the views and opinions of the person who post their views and opinions.</p>
+            <p>Parts of this website offer an opportunity for users to post and exchange opinions and information in certain areas of the website. NQSalam does not filter, edit, publish or review Comments prior to their presence on the website. Comments do not reflect the views and opinions of NQSalam, its agents and/or affiliates. Comments reflect the views and opinions of the person who post their views and opinions.</p>
             <h2 className="text-xl font-bold">Disclaimer</h2>
             <p>To the maximum extent permitted by applicable law, we exclude all representations, warranties and conditions relating to our website and the use of this website. Nothing in this disclaimer will:</p>
             <ul className="list-disc pl-6 space-y-1">

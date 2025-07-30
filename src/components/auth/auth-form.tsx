@@ -69,7 +69,7 @@ export function AuthForm() {
         <Card>
             <CardHeader>
                 <CardTitle className="font-headline text-2xl">
-                    {step === "phone" ? "Welcome to NurulQuranConnect" : "Enter Verification Code"}
+                    {step === "phone" ? "Welcome to NQSalam" : "Enter Verification Code"}
                 </CardTitle>
                 <CardDescription>
                     {step === "phone" 

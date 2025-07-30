@@ -75,7 +75,7 @@ export default function ChatLayout({ chats, loggedInUser }: ChatLayoutProps) {
         ) : (
           <div className="flex h-full items-center justify-center bg-background">
             <div className="text-center">
-              <h2 className="text-2xl font-semibold font-headline">Welcome to NurulQuranConnect</h2>
+              <h2 className="text-2xl font-semibold font-headline">Welcome to NQSalam</h2>
               <p className="text-muted-foreground">Select a chat to start messaging</p>
             </div>
           </div>

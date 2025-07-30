@@ -107,7 +107,7 @@ export function ChatHeader({ chat }: ChatHeaderProps) {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Report {chat.name}?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            The last 5 messages from this user will be forwarded to the SalamConnect moderation team. Do you want to proceed?
+                            The last 5 messages from this user will be forwarded to the NQSalam moderation team. Do you want to proceed?
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

@@ -6,7 +6,7 @@ import { AppearanceProvider } from '@/context/appearance-context';
 import { ThemeProvider } from '@/context/theme-context';
 
 export const metadata: Metadata = {
-  title: 'NurulQuranConnect',
+  title: 'NQSalam',
   description: 'A secure messaging app for the Muslim community.',
 };
 
