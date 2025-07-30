@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -75,7 +76,8 @@ export function AuthForm() {
         console.log("Verifying OTP:", values.otp);
         setIsLoading(false);
         // Check if user is "new" by seeing if they have a class selected.
-        // In a real app, you'd check your database.
+        // In a real app, you'd check your database. For this prototype,
+        // we assume a user is new if they don't have a Quran class assigned in the default data.
         if (defaultUser.quranClass) {
             login(defaultUser);
         } else {

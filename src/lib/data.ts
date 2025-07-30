@@ -10,8 +10,8 @@ export const defaultUser: User = {
     status: 'active',
     storage: { used: 25, total: 100 },
     language: 'English',
-    // studentId: 'NQC-001',
-    // quranClass: 'advanced-tafsir'
+    // studentId: 'NQC-001', // Example for existing user
+    // quranClass: 'advanced-tafsir' // Example for existing user
 };
 
 export const users: User[] = [
