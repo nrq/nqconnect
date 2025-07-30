@@ -15,7 +15,7 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
     const [fontSize, setFontSizeState] = useState<FontSize>("base");
 
     useEffect(() => {
-        const storedFontSize = localStorage.getItem("salamconnect-fontsize") as FontSize | null;
+        const storedFontSize = localStorage.getItem("nqc-fontsize") as FontSize | null;
         if (storedFontSize) {
             setFontSizeState(storedFontSize);
         }
@@ -27,7 +27,7 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
     }, [fontSize]);
 
     const setFontSize = (size: FontSize) => {
-        localStorage.setItem("salamconnect-fontsize", size);
+        localStorage.setItem("nqc-fontsize", size);
         setFontSizeState(size);
     };
 

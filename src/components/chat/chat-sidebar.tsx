@@ -27,6 +27,8 @@ import {
 import type { Chat } from "@/lib/types";
 import { useAuth } from "@/context/auth-context";
 import Link from "next/link";
+import { useTheme } from "next-themes";
+import { Switch } from "@/components/ui/switch";
 
 interface ChatSidebarProps {
   chats: Chat[];
@@ -38,6 +40,7 @@ interface ChatSidebarProps {
 
 export function ChatSidebar({ chats, onSelectChat, onSelectView, activeChatId, activeView }: ChatSidebarProps) {
   const { user, logout } = useAuth();
+  const { theme, setTheme } = useTheme();
   const privateChats = chats.filter((chat) => chat.type === 'private');
   const groupChats = chats.filter((chat) => chat.type === 'group');
 
@@ -143,7 +146,11 @@ export function ChatSidebar({ chats, onSelectChat, onSelectView, activeChatId, a
             </Button>
             <div className="flex items-center gap-2">
                 <Sun className="h-5 w-5" />
-                <Moon className="h-5 w-5 text-muted-foreground" />
+                <Switch
+                  checked={theme === 'dark'}
+                  onCheckedChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                />
+                <Moon className="h-5 w-5" />
             </div>
         </div>
       </SidebarFooter>

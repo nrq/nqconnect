@@ -19,7 +19,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         // In a real app, you'd check for a token in localStorage or a cookie
         // For this prototype, we'll start logged out
-        const storedUser = localStorage.getItem("salamconnect-user");
+        const storedUser = localStorage.getItem("nqc-user");
         if (storedUser) {
             setUser(JSON.parse(storedUser));
         }
@@ -27,12 +27,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const login = (userData: User) => {
-        localStorage.setItem("salamconnect-user", JSON.stringify(userData));
-        setUser(userData);
+        const userWithStorage = { ...userData, storage: { used: 25, total: 100 } };
+        localStorage.setItem("nqc-user", JSON.stringify(userWithStorage));
+        setUser(userWithStorage);
     };
 
     const logout = () => {
-        localStorage.removeItem("salamconnect-user");
+        localStorage.removeItem("nqc-user");
         setUser(null);
     };
 

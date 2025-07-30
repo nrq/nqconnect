@@ -24,7 +24,7 @@ export function SupportChatbot({ initialMessage }: SupportChatbotProps) {
         {
             id: '1',
             sender: 'bot',
-            text: 'As-salamu alaykum! Welcome to SalamConnect support. How can I help you today?',
+            text: 'As-salamu alaykum! Welcome to NurulQuranConnect support. How can I help you today?',
             timestamp: new Date(),
         }
     ]);
