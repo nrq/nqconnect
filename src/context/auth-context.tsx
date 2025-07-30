@@ -5,7 +5,6 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import type { User } from "@/lib/types";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
-import { defaultUser } from "@/lib/data";
 
 interface AuthContextType {
     user: User | null;
@@ -26,7 +25,11 @@ async function fetchUserProfile(firebaseUser: FirebaseUser): Promise<User | null
     // If not, it means it's a new user.
     const storedUser = localStorage.getItem("nqsalam-user-profile");
     if (storedUser) {
-        return JSON.parse(storedUser);
+        const parsedUser = JSON.parse(storedUser);
+        // Ensure the stored profile belongs to the currently authenticated user
+        if (parsedUser.id === firebaseUser.uid) {
+            return parsedUser;
+        }
     }
     // If no profile, it might be a new registration.
     // The details form will handle creating this.
@@ -70,15 +73,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     const reloadUser = async () => {
-        if (auth.currentUser) {
-            await auth.currentUser.reload();
-            const reloadedUser = auth.currentUser;
-            setFirebaseUser(reloadedUser);
-            if (reloadedUser) {
-                const userProfile = await fetchUserProfile(reloadedUser);
-                setUser(userProfile);
-            }
+        setLoading(true);
+        const currentUser = auth.currentUser;
+        if (currentUser) {
+            await currentUser.reload();
+            setFirebaseUser(currentUser);
+            const userProfile = await fetchUserProfile(currentUser);
+            setUser(userProfile);
+        } else {
+             setUser(null);
+             setFirebaseUser(null);
         }
+        setLoading(false);
     }
 
 
