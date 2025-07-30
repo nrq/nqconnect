@@ -76,6 +76,16 @@ body {
     --sidebar-border: 150 25% 20%;
     --sidebar-ring: 46 65% 52%;
   }
+
+  .font-size-sm {
+    font-size: 14px;
+  }
+  .font-size-base {
+    font-size: 16px;
+  }
+  .font-size-lg {
+    font-size: 18px;
+  }
 }
 
 @layer base {

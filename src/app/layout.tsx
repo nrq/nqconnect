@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import {Toaster} from '@/components/ui/toaster';
 import './globals.css';
 import { AuthProvider } from '@/context/auth-context';
+import { AppearanceProvider } from '@/context/appearance-context';
 
 export const metadata: Metadata = {
   title: 'SalamConnect',
@@ -22,9 +23,11 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        <AppearanceProvider>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </AppearanceProvider>
         <Toaster />
       </body>
     </html>

@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,6 +19,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { deleteAccount } from "@/app/actions";
 import { useAuth } from "@/context/auth-context";
+import { useAppearance } from '@/context/appearance-context';
 import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from 'next/link';
 import packageJson from '../../../package.json';
@@ -24,6 +27,7 @@ import packageJson from '../../../package.json';
 export function SettingsLayout() {
     const { toast } = useToast();
     const { logout } = useAuth();
+    const { fontSize, setFontSize } = useAppearance();
     const [isDeleting, setIsDeleting] = useState(false);
 
     const appVersion = packageJson.version;
@@ -62,6 +66,32 @@ export function SettingsLayout() {
             </div>
             <div className="flex-1 overflow-y-auto p-6">
                 <Card>
+                    <CardHeader>
+                        <CardTitle>Appearance</CardTitle>
+                        <CardDescription>Customize the look and feel of the app.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                         <div>
+                            <p className="font-medium mb-2">Font Size</p>
+                            <RadioGroup defaultValue={fontSize} onValueChange={(value) => setFontSize(value as any)}>
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="sm" id="font-sm" />
+                                    <Label htmlFor="font-sm">Small</Label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="base" id="font-base" />
+                                    <Label htmlFor="font-base">Default</Label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="lg" id="font-lg" />
+                                    <Label htmlFor="font-lg">Large</Label>
+                                </div>
+                            </RadioGroup>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card className="mt-6">
                     <CardHeader>
                         <CardTitle>Account</CardTitle>
                         <CardDescription>View and manage your account details.</CardDescription>
