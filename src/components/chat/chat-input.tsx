@@ -1,11 +1,22 @@
+
 "use client";
 
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Paperclip, Mic, SendHorizonal, Image as ImageIcon, FileText, Video } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useToast } from "@/hooks/use-toast";
 
 export function ChatInput() {
+  const { toast } = useToast();
+
+  const handleFeatureNotImplemented = () => {
+    toast({
+      title: "Feature Coming Soon",
+      description: "We're working on bringing this feature to you.",
+    });
+  };
+
   return (
     <div className="border-t p-4 bg-background">
       <form
@@ -37,13 +48,13 @@ export function ChatInput() {
             </PopoverTrigger>
             <PopoverContent className="w-auto p-2">
                 <div className="flex gap-2">
-                    <Button variant="outline" size="icon"><ImageIcon/></Button>
-                    <Button variant="outline" size="icon"><Video/></Button>
-                    <Button variant="outline" size="icon"><FileText/></Button>
+                    <Button variant="outline" size="icon" onClick={handleFeatureNotImplemented}><ImageIcon/></Button>
+                    <Button variant="outline" size="icon" onClick={handleFeatureNotImplemented}><Video/></Button>
+                    <Button variant="outline" size="icon" onClick={handleFeatureNotImplemented}><FileText/></Button>
                 </div>
             </PopoverContent>
           </Popover>
-          <Button type="button" variant="ghost" size="icon">
+          <Button type="button" variant="ghost" size="icon" onClick={handleFeatureNotImplemented}>
             <Mic className="h-5 w-5" />
             <span className="sr-only">Voice message</span>
           </Button>

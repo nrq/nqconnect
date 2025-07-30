@@ -68,6 +68,7 @@ export function SettingsLayout() {
                 <Button asChild variant="ghost" size="icon">
                     <Link href="/">
                         <ArrowLeft />
+                        <span className="sr-only">Back to Chats</span>
                     </Link>
                 </Button>
                 <div>

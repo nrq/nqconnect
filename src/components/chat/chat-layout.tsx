@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -35,12 +36,18 @@ export default function ChatLayout({ chats, loggedInUser }: ChatLayoutProps) {
       if (messageParam === 'storage') {
         setInitialSupportMessage('I would like to request more storage.');
       }
-    } else {
+    } else if (viewParam === 'admin' && loggedInUser.role === 'admin') {
+      setActiveView('admin');
+      setSelectedChat(null);
+    }
+    else {
         // Default view
         setActiveView('chat');
-        setSelectedChat(chats[0]);
+        if (!selectedChat && chats.length > 0) {
+            setSelectedChat(chats[0]);
+        }
     }
-  }, [viewParam, messageParam, chats]);
+  }, [viewParam, messageParam, chats, loggedInUser, selectedChat]);
 
 
   const handleSelectChat = (chat: Chat) => {
@@ -73,7 +80,7 @@ export default function ChatLayout({ chats, loggedInUser }: ChatLayoutProps) {
           <EventUpdates />
         ) : activeView === 'support' ? (
           <SupportChatbot initialMessage={initialSupportMessage} />
-        ) : activeView === 'admin' ? (
+        ) : activeView === 'admin' && loggedInUser.role === 'admin' ? (
           <AdminPanel />
         ) : (
           <div className="flex h-full items-center justify-center bg-background">
