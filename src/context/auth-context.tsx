@@ -17,22 +17,18 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// This is a mock function to fetch user profile from your database
-// In a real app, you would fetch this from Firestore or another database
-async function fetchUserProfile(firebaseUser: FirebaseUser): Promise<User | null> {
-    console.log("Fetching profile for user:", firebaseUser.uid);
+// In a real app with email/password, you'd fetch a profile from your DB after Firebase confirms the login.
+// For this prototype, we'll just use a mock user object.
+async function fetchUserProfile(userId: string): Promise<User | null> {
+    console.log("Fetching profile for user:", userId);
     // For this prototype, we'll check if a user profile exists in localStorage.
-    // If not, it means it's a new user.
     const storedUser = localStorage.getItem("nqsalam-user-profile");
     if (storedUser) {
         const parsedUser = JSON.parse(storedUser);
-        // Ensure the stored profile belongs to the currently authenticated user
-        if (parsedUser.id === firebaseUser.uid) {
+        if (parsedUser.id === userId) {
             return parsedUser;
         }
     }
-    // If no profile, it might be a new registration.
-    // The details form will handle creating this.
     return null;
 }
 
@@ -43,15 +39,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            setFirebaseUser(user);
-            if (user) {
-                // User is signed in with Firebase. Now fetch our application-specific user profile.
-                const userProfile = await fetchUserProfile(user);
+        // We're keeping onAuthStateChanged for potential future use, 
+        // but our primary login flow is now mocked.
+        const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
+            setFirebaseUser(fbUser);
+            if (fbUser) {
+                const userProfile = await fetchUserProfile(fbUser.uid);
                 setUser(userProfile);
             } else {
-                // User is signed out.
-                setUser(null);
+                // Also check localStorage for our mock user session
+                 const localUser = localStorage.getItem("nqsalam-user-profile");
+                 if (localUser) {
+                     setUser(JSON.parse(localUser));
+                 } else {
+                    setUser(null);
+                 }
             }
             setLoading(false);
         });
@@ -60,29 +62,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const login = (userData: User) => {
-        // This function is now for saving the user profile after it's created/updated
-        const userWithStorage = { ...userData, storage: { used: 25, total: 100 } };
-        localStorage.setItem("nqsalam-user-profile", JSON.stringify(userWithStorage));
-        setUser(userWithStorage);
+        // This function saves the mock user to localStorage to simulate a session
+        localStorage.setItem("nqsalam-user-profile", JSON.stringify(userData));
+        setUser(userData);
     };
 
     const logout = () => {
+        // Sign out from firebase if the user was ever logged in, and clear our mock session
         auth.signOut();
         localStorage.removeItem("nqsalam-user-profile");
         setUser(null);
     };
 
     const reloadUser = async () => {
+        // This function is less relevant for a mock flow, but we'll keep it for consistency
         setLoading(true);
-        const currentUser = auth.currentUser;
-        if (currentUser) {
-            await currentUser.reload();
-            setFirebaseUser(currentUser);
-            const userProfile = await fetchUserProfile(currentUser);
-            setUser(userProfile);
+        const localUser = localStorage.getItem("nqsalam-user-profile");
+        if (localUser) {
+            setUser(JSON.parse(localUser));
         } else {
-             setUser(null);
-             setFirebaseUser(null);
+            setUser(null);
         }
         setLoading(false);
     }
