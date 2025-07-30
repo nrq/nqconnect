@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import Image from 'next/image';
 
 interface ChatInputProps {
-  onSendMessage: (message: { text: string; file?: File | null }) => Promise<void>;
+  onSendMessage: (message: { text: string; imageDataUri?: string | null }) => Promise<void>;
   disabled?: boolean;
 }
 
@@ -53,12 +53,26 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
           fileInputRef.current.value = "";
       }
   }
+  
+  const fileToDataUri = (file: File): Promise<string> => {
+      return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+      });
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!text.trim() && !file) return;
 
-    await onSendMessage({ text: text.trim(), file });
+    let imageDataUri: string | null = null;
+    if (file) {
+        imageDataUri = await fileToDataUri(file);
+    }
+
+    await onSendMessage({ text: text.trim(), imageDataUri });
     
     setText("");
     handleRemoveAttachment();

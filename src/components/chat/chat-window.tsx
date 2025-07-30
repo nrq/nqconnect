@@ -19,16 +19,14 @@ export function ChatWindow({ chat: initialChat, loggedInUser }: ChatWindowProps)
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleSendMessage = async (message: { text: string; file?: File | null }) => {
+  const handleSendMessage = async (message: { text: string; imageDataUri?: string | null }) => {
     setIsLoading(true);
 
     const result = await sendMessage({
       chatId: chat.id,
       senderId: loggedInUser.id,
       text: message.text,
-      // In a real app, the file would be uploaded and a URL returned.
-      // For this prototype, we'll simulate this with a placeholder.
-      imageUrl: message.file ? URL.createObjectURL(message.file) : undefined,
+      imageDataUri: message.imageDataUri || undefined,
     });
     
     if(result.error) {
