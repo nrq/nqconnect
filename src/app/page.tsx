@@ -4,10 +4,23 @@ import { useAuth } from "@/context/auth-context";
 import ChatLayout from "@/components/chat/chat-layout";
 import { chats } from "@/lib/data";
 import AuthPage from "@/app/auth/page";
-import { Suspense } from "react";
+import { Suspense, useState, useEffect } from "react";
+import { SplashScreen } from "@/components/splash-screen";
 
 function ChatPageContent() {
   const { user, loading } = useAuth();
+  const [isSplashing, setIsSplashing] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsSplashing(false);
+    }, 3000); // Splash screen duration: 3 seconds
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isSplashing) {
+    return <SplashScreen />;
+  }
 
   if (loading) {
     return (
