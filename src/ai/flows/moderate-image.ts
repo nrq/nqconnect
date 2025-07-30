@@ -37,50 +37,10 @@ const moderateImageFlow = ai.defineFlow(
     outputSchema: ModerateImageOutputSchema,
   },
   async input => {
-    try {
-        const { candidates } = await ai.generate({
-            model: 'googleai/gemini-2.0-flash',
-            prompt: [{media: {url: input.photoDataUri}}],
-            config: {
-                safetySettings: [
-                    {
-                        category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-                        threshold: 'BLOCK_LOW_AND_ABOVE',
-                    },
-                     {
-                        category: 'HARM_CATEGORY_HATE_SPEECH',
-                        threshold: 'BLOCK_LOW_AND_ABOVE',
-                    },
-                    {
-                        category: 'HARM_CATEGORY_HARASSMENT',
-                        threshold: 'BLOCK_LOW_AND_ABOVE',
-                    },
-                    {
-                        category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
-                        threshold: 'BLOCK_LOW_AND_ABOVE',
-                    },
-                ],
-            }
-        });
-
-        const blockedCandidate = candidates.find(c => c.finishReason === 'BLOCKED');
-        if (blockedCandidate) {
-            const safetyRating = blockedCandidate.safetyRatings?.[0];
-            return {
-                isAppropriate: false,
-                reason: `Image blocked due to: ${safetyRating?.category || 'Inappropriate Content'}.`,
-            };
-        }
-
-       return { isAppropriate: true };
-
-    } catch (error: any) {
-        console.error('Error during moderation:', error);
-        // This can happen if the API call itself fails.
-         return {
-            isAppropriate: false,
-            reason: 'Could not process image for moderation.'
-        };
-    }
+    // This flow is a placeholder and does not perform real moderation.
+    // It's been disabled to reduce operational costs.
+    // The app relies on user reporting for content moderation.
+    console.log("Image moderation is currently disabled. Relying on user reporting.");
+    return { isAppropriate: true };
   }
 );

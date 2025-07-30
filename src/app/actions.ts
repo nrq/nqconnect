@@ -3,9 +3,8 @@
 
 import { translateMessage, TranslateMessageInput } from "@/ai/flows/translate-message";
 import { summarizeGroupChat, SummarizeGroupChatInput } from "@/ai/flows/summarize-group-chat";
-import { moderateImage, ModerateImageInput } from "@/ai/flows/moderate-image";
 import { revalidatePath } from "next/cache";
-import { chats, allUsers } from "@/lib/data";
+import { chats } from "@/lib/data";
 import { Message, Chat } from "@/lib/types";
 
 export async function getTranslation(text: string, sourceLanguage: string, targetLanguage: string) {
@@ -71,20 +70,6 @@ export async function sendMessage(
     console.log("Simulating sending message:", payload);
 
     try {
-        // --- Image Moderation Step ---
-        if (payload.imageDataUri) {
-            console.log("Moderating image...");
-            const moderationInput: ModerateImageInput = { photoDataUri: payload.imageDataUri };
-            const moderationResult = await moderateImage(moderationInput);
-
-            if (!moderationResult.isAppropriate) {
-                console.log("Image flagged as inappropriate:", moderationResult.reason);
-                return { error: moderationResult.reason || "Image violates community guidelines." };
-            }
-             console.log("Image passed moderation.");
-        }
-        // --- End of Moderation ---
-
         // Find the chat in our mock data
         const chatIndex = chats.findIndex(c => c.id === payload.chatId);
         if (chatIndex === -1) {
