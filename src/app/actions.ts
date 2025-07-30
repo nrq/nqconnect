@@ -1,3 +1,4 @@
+
 "use server";
 
 import { translateMessage, TranslateMessageInput } from "@/ai/flows/translate-message";
@@ -24,5 +25,19 @@ export async function deleteAccount() {
     // For this prototype, we'll just simulate it.
     console.log("User account deleted.");
     revalidatePath("/");
+    return { success: true };
+}
+
+export async function suspendUser(userId: string, currentStatus: 'active' | 'suspended') {
+    // Simulate updating user status in a database
+    console.log(`User ${userId} status changed to ${currentStatus === 'active' ? 'suspended' : 'active'}`);
+    revalidatePath('/?view=admin');
+    return { success: true, newStatus: currentStatus === 'active' ? 'suspended' : 'active' };
+}
+
+export async function deleteUserById(userId: string) {
+    // Simulate deleting a user from a database
+    console.log(`User ${userId} deleted.`);
+    revalidatePath('/?view=admin');
     return { success: true };
 }

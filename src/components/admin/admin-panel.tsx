@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -11,27 +12,87 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { allUsers } from "@/lib/data";
+import { allUsers as initialUsers } from "@/lib/data";
 import { User } from "@/lib/types";
-import { MoreVertical, ShieldCheck, UserCircle } from "lucide-react";
+import { Loader2, MoreVertical, ShieldCheck, UserCircle } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { useToast } from "@/hooks/use-toast";
+import { suspendUser, deleteUserById } from "@/app/actions";
+
 
 export function AdminPanel() {
+  const [users, setUsers] = useState<User[]>(initialUsers);
+  const [isLoading, setIsLoading] = useState<string | null>(null); // To track loading state by user ID
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const { toast } = useToast();
 
-  const handleSuspend = (user: User) => {
-    // In a real app, this would trigger a server action
-    alert(`User ${user.name} would be suspended.`);
+  const handleSuspend = async (user: User) => {
+    setIsLoading(user.id);
+    const result = await suspendUser(user.id, user.status);
+    if (result.success) {
+      setUsers(prevUsers =>
+        prevUsers.map(u =>
+          u.id === user.id ? { ...u, status: result.newStatus as 'active' | 'suspended' } : u
+        )
+      );
+      toast({
+        title: "User Updated",
+        description: `User ${user.name} has been ${result.newStatus}.`,
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to update user status.",
+      });
+    }
+    setIsLoading(null);
   };
 
-  const handleDelete = (user: User) => {
-    // In a real app, this would trigger a server action
-    alert(`User ${user.name} would be deleted.`);
+  const handleDeleteConfirm = async () => {
+    if (!selectedUser) return;
+    setIsLoading(selectedUser.id);
+    const result = await deleteUserById(selectedUser.id);
+
+    if (result.success) {
+      setUsers(prevUsers => prevUsers.filter(u => u.id !== selectedUser.id));
+      toast({
+        title: "User Deleted",
+        description: `User ${selectedUser.name} has been deleted.`,
+      });
+    } else {
+        toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to delete user.",
+      });
+    }
+    setIsLoading(null);
+    setIsDeleteDialogOpen(false);
+    setSelectedUser(null);
   };
+
+  const openDeleteDialog = (user: User) => {
+    setSelectedUser(user);
+    setIsDeleteDialogOpen(true);
+  };
+
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -51,7 +112,7 @@ export function AdminPanel() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {allUsers.map((user) => (
+            {users.map((user) => (
               <TableRow key={user.id}>
                 <TableCell className="font-medium">{user.name}</TableCell>
                 <TableCell>
@@ -69,7 +130,9 @@ export function AdminPanel() {
                   {user.storage.used}MB / {user.storage.total}MB
                 </TableCell>
                 <TableCell className="text-right">
-                  {user.role !== 'admin' && (
+                  {isLoading === user.id ? (
+                    <Loader2 className="h-5 w-5 animate-spin ml-auto" />
+                  ) : user.role !== 'admin' ? (
                      <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
@@ -81,20 +144,39 @@ export function AdminPanel() {
                           {user.status === 'active' ? 'Suspend' : 'Un-suspend'}
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          onClick={() => handleDelete(user)}
+                          onClick={() => openDeleteDialog(user)}
                           className="text-destructive focus:text-destructive"
                         >
                           Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  )}
+                  ) : null}
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
+       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete {selectedUser?.name}'s account.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setSelectedUser(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              className="bg-destructive hover:bg-destructive/90"
+            >
+              Yes, delete user
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
