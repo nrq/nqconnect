@@ -1,18 +1,37 @@
+
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
+interface WaterfallItem {
+  id: number;
+  left: string;
+  animation: string;
+}
 
 export function SplashScreen() {
+  const [waterfallItems, setWaterfallItems] = useState<WaterfallItem[]>([]);
+
+  useEffect(() => {
+    // Generate waterfall items only on the client-side to prevent hydration mismatch
+    const items = [...Array(50)].map((_, i) => ({
+      id: i,
+      left: `${Math.random() * 100}%`,
+      animation: `waterfall-fall ${2 + Math.random() * 2}s linear ${Math.random() * 5}s infinite`,
+    }));
+    setWaterfallItems(items);
+  }, []); // Empty dependency array ensures this runs only once on the client after mount
+
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-b from-emerald-100 via-cyan-100 to-blue-100 dark:from-gray-900 dark:via-emerald-900 dark:to-cyan-900 overflow-hidden relative">
       <div className="absolute inset-0 z-0">
-        {[...Array(50)].map((_, i) => (
+        {waterfallItems.map((item) => (
           <div
-            key={i}
+            key={item.id}
             className="absolute top-[-50%] h-1/2 w-0.5 bg-white/30 dark:bg-white/10"
             style={{
-              left: `${Math.random() * 100}%`,
-              animation: `waterfall-fall ${2 + Math.random() * 2}s linear ${Math.random() * 5}s infinite`,
+              left: item.left,
+              animation: item.animation,
             }}
           />
         ))}
