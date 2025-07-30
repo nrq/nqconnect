@@ -6,6 +6,8 @@ import {
   MoreVertical,
   ShieldAlert,
   UserX,
+  Sparkles,
+  Loader2,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -14,6 +16,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
@@ -29,6 +32,8 @@ import {
 
 import type { Chat } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { getSummary } from "@/app/actions";
 
 interface ChatHeaderProps {
   chat: Chat;
@@ -36,6 +41,9 @@ interface ChatHeaderProps {
 
 export function ChatHeader({ chat }: ChatHeaderProps) {
   const { toast } = useToast();
+  const [isSummarizing, setIsSummarizing] = useState(false);
+  const [summary, setSummary] = useState<string | null>(null);
+  const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
 
   const handleAction = (action: "Block" | "Report") => {
     toast({
@@ -43,6 +51,24 @@ export function ChatHeader({ chat }: ChatHeaderProps) {
       description: `User ${chat.name} has been ${action.toLowerCase()}ed. Our team will review the report.`,
       variant: 'default'
     });
+  }
+  
+  const handleSummarize = async () => {
+    setIsSummarizing(true);
+    setSummary(null);
+    const chatHistory = chat.messages.map(m => `${chat.participants.find(p => p.id === m.senderId)?.name}: ${m.text}`).join('\n');
+    const result = await getSummary(chatHistory);
+    setIsSummarizing(false);
+    if(result.error) {
+        toast({
+            variant: "destructive",
+            title: "Summarization Error",
+            description: result.error,
+        });
+    } else {
+        setSummary(result.summary || "No summary available.");
+        setIsSummaryDialogOpen(true);
+    }
   }
 
   return (
@@ -60,6 +86,27 @@ export function ChatHeader({ chat }: ChatHeaderProps) {
         </div>
       </div>
       <div className="flex items-center gap-2">
+        {chat.type === 'group' && (
+             <AlertDialog open={isSummaryDialogOpen} onOpenChange={setIsSummaryDialogOpen}>
+                <AlertDialogTrigger asChild>
+                    <Button variant="ghost" size="icon" className="hover:bg-accent/20" onClick={handleSummarize} disabled={isSummarizing}>
+                        {isSummarizing ? <Loader2 className="h-5 w-5 animate-spin"/> : <Sparkles className="h-5 w-5 text-accent" />}
+                        <span className="sr-only">Summarize Chat</span>
+                    </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Chat Summary for {chat.name}</AlertDialogTitle>
+                        <AlertDialogDescription className="max-h-[400px] overflow-y-auto">
+                           {summary}
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogAction onClick={() => setIsSummaryDialogOpen(false)}>Close</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+        )}
         <Button variant="ghost" size="icon" className="hover:bg-accent/20">
           <Phone className="h-5 w-5 text-primary" />
           <span className="sr-only">Audio Call</span>

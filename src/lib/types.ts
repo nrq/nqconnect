@@ -9,6 +9,8 @@ export interface User {
     used: number; // in MB
     total: number; // in MB
   };
+  studentId?: string;
+  quranClass?: 'hifz-al-quran' | 'tajweed-basics' | 'advanced-tafsir' | 'quranic-arabic';
 }
 
 export interface Message {

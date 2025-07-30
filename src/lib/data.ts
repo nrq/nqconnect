@@ -9,14 +9,16 @@ export const defaultUser: User = {
     role: 'admin',
     status: 'active',
     storage: { used: 25, total: 100 },
+    // studentId: 'NQC-001',
+    // quranClass: 'advanced-tafsir'
 };
 
 export const users: User[] = [
-    { id: 'user-1', name: 'Fatima Ahmed', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=FA', isOnline: true, role: 'user', status: 'active', storage: { used: 40, total: 100 } },
-    { id: 'user-2', name: 'Omar Khan', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=OK', isOnline: false, role: 'user', status: 'active', storage: { used: 15, total: 100 } },
-    { id: 'user-3', name: 'Aisha Dubois', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=AD', isOnline: true, role: 'user', status: 'suspended', storage: { used: 60, total: 100 } },
-    { id: 'user-4', name: 'Mustafa Schmidt', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=MS', isOnline: false, role: 'user', status: 'active', storage: { used: 5, total: 100 } },
-    { id: 'user-5', name: 'Layla Olsen', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=LO', isOnline: true, role: 'user', status: 'active', storage: { used: 80, total: 100 } },
+    { id: 'user-1', name: 'Fatima Ahmed', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=FA', isOnline: true, role: 'user', status: 'active', storage: { used: 40, total: 100 }, studentId: 'NQC-101', quranClass: 'hifz-al-quran' },
+    { id: 'user-2', name: 'Omar Khan', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=OK', isOnline: false, role: 'user', status: 'active', storage: { used: 15, total: 100 }, studentId: 'NQC-102', quranClass: 'tajweed-basics' },
+    { id: 'user-3', name: 'Aisha Dubois', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=AD', isOnline: true, role: 'user', status: 'suspended', storage: { used: 60, total: 100 }, studentId: 'NQC-103', quranClass: 'quranic-arabic' },
+    { id: 'user-4', name: 'Mustafa Schmidt', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=MS', isOnline: false, role: 'user', status: 'active', storage: { used: 5, total: 100 }, studentId: 'NQC-104', quranClass: 'hifz-al-quran' },
+    { id: 'user-5', name: 'Layla Olsen', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=LO', isOnline: true, role: 'user', status: 'active', storage: { used: 80, total: 100 }, studentId: 'NQC-105', quranClass: 'advanced-tafsir' },
 ];
 
 export const allUsers = [defaultUser, ...users];
@@ -46,7 +48,7 @@ export const chats: Chat[] = [
         messages: [
             { id: 'msg-5', senderId: 'user-2', text: 'Bonjour tout le monde!', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), language: 'French' },
             { id: 'msg-6', senderId: 'user-3', text: 'Bonjour Omar! Wie geht es Ihnen?', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 1), language: 'German' },
-            { id: 'msg-7', senderId: 'user-0', text: 'Hey everyone! Good to see you all.', timestamp: new Date(Date.now() - 1000 * 60 * 30) },
+            { id: 'msg-7', senderId: 'user-0', text: 'Hey everyone! Good to see you all. I wanted to share a link to a great article I read about the history of our local mosque, it was very enlightening. We should all try to read it before the next community meeting. Also, reminder that the potluck is this Friday, please sign up for a dish if you have not already.', timestamp: new Date(Date.now() - 1000 * 60 * 30) },
         ],
     },
     {

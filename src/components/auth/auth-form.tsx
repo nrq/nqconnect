@@ -11,12 +11,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useAuth } from "@/context/auth-context";
 import { Loader2 } from "lucide-react";
 import { defaultUser } from "@/lib/data";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const phoneRegex = new RegExp(
   /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
 );
 
-const formSchema = z.object({
+const phoneSchema = z.object({
     phoneNumber: z.string().regex(phoneRegex, "Invalid phone number"),
 });
 
@@ -24,13 +25,18 @@ const otpSchema = z.object({
     otp: z.string().min(6, "OTP must be 6 digits"),
 });
 
+const detailsSchema = z.object({
+    quranClass: z.string().min(1, "Please select a class"),
+    studentId: z.string().optional(),
+})
+
 export function AuthForm() {
-    const [step, setStep] = useState<"phone" | "otp">("phone");
+    const [step, setStep] = useState<"phone" | "otp" | "details">("phone");
     const [isLoading, setIsLoading] = useState(false);
     const { login } = useAuth();
     
-    const phoneForm = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const phoneForm = useForm<z.infer<typeof phoneSchema>>({
+        resolver: zodResolver(phoneSchema),
         defaultValues: {
             phoneNumber: "",
         },
@@ -43,7 +49,15 @@ export function AuthForm() {
         },
     });
 
-    async function onPhoneSubmit(values: z.infer<typeof formSchema>) {
+    const detailsForm = useForm<z.infer<typeof detailsSchema>>({
+        resolver: zodResolver(detailsSchema),
+        defaultValues: {
+            quranClass: "",
+            studentId: "",
+        },
+    });
+
+    async function onPhoneSubmit(values: z.infer<typeof phoneSchema>) {
         setIsLoading(true);
         // Simulate sending OTP
         await new Promise(resolve => setTimeout(resolve, 1500));
@@ -54,28 +68,36 @@ export function AuthForm() {
 
     async function onOtpSubmit(values: z.infer<typeof otpSchema>) {
         setIsLoading(true);
-        // Simulate verifying OTP and logging in
+        // Simulate verifying OTP
         await new Promise(resolve => setTimeout(resolve, 1500));
         console.log("Verifying OTP:", values.otp);
-        login(defaultUser);
+        setIsLoading(false);
+        // Check if user is "new" by seeing if they have a class selected.
+        // In a real app, you'd check your database.
+        if (defaultUser.quranClass) {
+            login(defaultUser);
+        } else {
+            setStep("details");
+        }
+    }
+
+    async function onDetailsSubmit(values: z.infer<typeof detailsSchema>) {
+        setIsLoading(true);
+        // Simulate saving details and logging in
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        const finalUser = {
+            ...defaultUser,
+            ...values,
+        };
+        console.log("Saving user details:", finalUser);
+        login(finalUser);
         setIsLoading(false);
     }
 
-    return (
-        <Card>
-            <CardHeader>
-                <CardTitle className="font-headline text-2xl">
-                    {step === "phone" ? "Welcome to NQSalam" : "Enter Verification Code"}
-                </CardTitle>
-                <CardDescription>
-                    {step === "phone" 
-                        ? "Enter your phone number to sign in or create an account." 
-                        : `We've sent a 6-digit code to ${phoneForm.getValues("phoneNumber")}.`
-                    }
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                {step === "phone" ? (
+    const renderStep = () => {
+        switch (step) {
+            case "phone":
+                return (
                     <Form {...phoneForm}>
                         <form onSubmit={phoneForm.handleSubmit(onPhoneSubmit)} className="space-y-6">
                             <FormField
@@ -97,7 +119,9 @@ export function AuthForm() {
                             </Button>
                         </form>
                     </Form>
-                ) : (
+                )
+            case "otp":
+                 return (
                     <Form {...otpForm}>
                         <form onSubmit={otpForm.handleSubmit(onOtpSubmit)} className="space-y-6">
                              <FormField
@@ -122,7 +146,86 @@ export function AuthForm() {
                             </Button>
                         </form>
                     </Form>
-                )}
+                )
+            case "details":
+                 return (
+                    <Form {...detailsForm}>
+                        <form onSubmit={detailsForm.handleSubmit(onDetailsSubmit)} className="space-y-6">
+                            <FormField
+                                control={detailsForm.control}
+                                name="quranClass"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Quran Class</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select your class" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="hifz-al-quran">Hifz al-Quran (Memorization)</SelectItem>
+                                                <SelectItem value="tajweed-basics">Tajweed Basics</SelectItem>
+                                                <SelectItem value="advanced-tafsir">Advanced Tafsir</SelectItem>
+                                                <SelectItem value="quranic-arabic">Quranic Arabic</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={detailsForm.control}
+                                name="studentId"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Student ID (Optional)</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="e.g. NQC-12345" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <Button type="submit" className="w-full" disabled={isLoading}>
+                                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                Complete Registration
+                            </Button>
+                        </form>
+                    </Form>
+                )
+        }
+    }
+    
+    const getTitle = () => {
+        switch(step) {
+            case "phone": return "Welcome to NQSalam";
+            case "otp": return "Enter Verification Code";
+            case "details": return "Complete Your Profile";
+        }
+    }
+
+    const getDescription = () => {
+        switch(step) {
+            case "phone": return "Enter your phone number to sign in or create an account.";
+            case "otp": return `We've sent a 6-digit code to ${phoneForm.getValues("phoneNumber")}.`;
+            case "details": return "Please provide a few more details to finish setting up your account.";
+        }
+    }
+
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle className="font-headline text-2xl">
+                    {getTitle()}
+                </CardTitle>
+                <CardDescription>
+                    {getDescription()}
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                {renderStep()}
             </CardContent>
         </Card>
     );

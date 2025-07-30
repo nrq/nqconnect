@@ -2,6 +2,7 @@
 "use server";
 
 import { translateMessage, TranslateMessageInput } from "@/ai/flows/translate-message";
+import { summarizeGroupChat, SummarizeGroupChatInput } from "@/ai/flows/summarize-group-chat";
 import { revalidatePath } from "next/cache";
 
 export async function getTranslation(text: string, sourceLanguage: string, targetLanguage: string) {
@@ -16,6 +17,17 @@ export async function getTranslation(text: string, sourceLanguage: string, targe
     } catch (error) {
         console.error("Translation failed:", error);
         return { error: "Failed to translate message." };
+    }
+}
+
+export async function getSummary(chatHistory: string) {
+    try {
+        const input: SummarizeGroupChatInput = { chatHistory };
+        const result = await summarizeGroupChat(input);
+        return { summary: result.summary };
+    } catch (error) {
+        console.error("Summarization failed:", error);
+        return { error: "Failed to summarize chat." };
     }
 }
 

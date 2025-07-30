@@ -22,7 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 import { deleteAccount } from "@/app/actions";
 import { useAuth } from "@/context/auth-context";
 import { useAppearance } from '@/context/appearance-context';
-import { ArrowLeft, Loader2, MessageSquare, FileText, Shield } from "lucide-react";
+import { ArrowLeft, Loader2, MessageSquare, FileText, Shield, User, GraduationCap } from "lucide-react";
 import Link from 'next/link';
 import packageJson from '../../../package.json';
 
@@ -55,6 +55,13 @@ export function SettingsLayout() {
 
     const storageUsagePercentage = user && user.storage ? (user.storage.used / user.storage.total) * 100 : 0;
 
+    const classNames: { [key: string]: string } = {
+        "hifz-al-quran": "Hifz al-Quran",
+        "tajweed-basics": "Tajweed Basics",
+        "advanced-tafsir": "Advanced Tafsir",
+        "quranic-arabic": "Quranic Arabic",
+    }
+    
     return (
         <div className="flex flex-col h-full bg-background">
              <div className="p-4 border-b flex items-center gap-4">
@@ -68,7 +75,28 @@ export function SettingsLayout() {
                     <p className="text-muted-foreground">Manage your account and app settings</p>
                 </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Account</CardTitle>
+                        <CardDescription>Your account information.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        {user && (
+                             <div className="space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <User className="h-4 w-4 text-muted-foreground"/>
+                                    <p className="font-medium">{user.studentId || "No Student ID"}</p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <GraduationCap className="h-4 w-4 text-muted-foreground"/>
+                                    <p className="font-medium">{classNames[user.quranClass || ''] || "No Class Assigned"}</p>
+                                </div>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+
                 <Card>
                     <CardHeader>
                         <CardTitle>Appearance</CardTitle>
@@ -95,7 +123,7 @@ export function SettingsLayout() {
                     </CardContent>
                 </Card>
 
-                 <Card className="mt-6">
+                 <Card>
                     <CardHeader>
                         <CardTitle>Storage</CardTitle>
                         <CardDescription>Manage your cloud storage usage.</CardDescription>
@@ -120,7 +148,7 @@ export function SettingsLayout() {
                     </CardFooter>
                 </Card>
 
-                <Card className="mt-6">
+                <Card>
                     <CardHeader>
                         <CardTitle>About</CardTitle>
                         <CardDescription>View app information and legal documents.</CardDescription>
