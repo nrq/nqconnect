@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -21,7 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 import { deleteAccount } from "@/app/actions";
 import { useAuth } from "@/context/auth-context";
 import { useAppearance } from '@/context/appearance-context';
-import { ArrowLeft, Loader2, MessageSquare } from "lucide-react";
+import { ArrowLeft, Loader2, MessageSquare, FileText, Shield } from "lucide-react";
 import Link from 'next/link';
 import packageJson from '../../../package.json';
 
@@ -121,13 +122,27 @@ export function SettingsLayout() {
 
                 <Card className="mt-6">
                     <CardHeader>
-                        <CardTitle>Account</CardTitle>
-                        <CardDescription>View and manage your account details.</CardDescription>
+                        <CardTitle>About</CardTitle>
+                        <CardDescription>View app information and legal documents.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
                             <p className="font-medium">App Version</p>
                             <p className="text-muted-foreground">{appVersion}</p>
+                        </div>
+                         <div className="flex flex-col space-y-2">
+                            <Button variant="outline" className="w-full justify-start" asChild>
+                                <Link href="/terms">
+                                    <FileText className="mr-2 h-4 w-4" />
+                                    Terms & Conditions
+                                </Link>
+                            </Button>
+                             <Button variant="outline" className="w-full justify-start" asChild>
+                                <Link href="/privacy">
+                                    <Shield className="mr-2 h-4 w-4" />
+                                    Privacy Policy
+                                </Link>
+                            </Button>
                         </div>
                     </CardContent>
                 </Card>
