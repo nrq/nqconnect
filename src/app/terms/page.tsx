@@ -1,10 +1,19 @@
 
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 export default function TermsPage() {
+  const [lastUpdated, setLastUpdated] = useState('');
+
+  useEffect(() => {
+    setLastUpdated(new Date().toLocaleDateString());
+  }, []);
+
   return (
     <main className="flex min-h-screen flex-col items-center bg-background p-4 sm:p-6 md:p-8">
       <div className="w-full max-w-4xl">
@@ -19,7 +28,7 @@ export default function TermsPage() {
         </div>
         <Card>
           <CardHeader>
-            <CardTitle>Last updated: {new Date().toLocaleDateString()}</CardTitle>
+            <CardTitle>Last updated: {lastUpdated}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p>Welcome to NQSalam!</p>
