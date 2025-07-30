@@ -73,6 +73,14 @@ export function AuthForm() {
     });
 
     useEffect(() => {
+        // If we have a firebaseUser but not a local profile, it means they are new
+        if (firebaseUser && !user) {
+            setStep("details");
+        }
+    }, [firebaseUser, user]);
+
+    const generateRecaptcha = () => {
+        // Only create a new verifier if one doesn't exist
         if (!window.recaptchaVerifier) {
             window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
                 'size': 'invisible',
@@ -81,18 +89,12 @@ export function AuthForm() {
                 }
             });
         }
-    }, []);
-
-    useEffect(() => {
-        // If we have a firebaseUser but not a local profile, it means they are new
-        if (firebaseUser && !user) {
-            setStep("details");
-        }
-    }, [firebaseUser, user]);
-
+    }
 
     async function onPhoneSubmit(values: z.infer<typeof phoneSchema>) {
         setIsLoading(true);
+        generateRecaptcha();
+        
         try {
             const verifier = window.recaptchaVerifier!;
             const confirmationResult = await signInWithPhoneNumber(auth, values.phoneNumber, verifier);
@@ -339,3 +341,5 @@ export function AuthForm() {
         </Card>
     );
 }
+
+    
