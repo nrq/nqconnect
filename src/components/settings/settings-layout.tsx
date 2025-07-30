@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,13 +21,13 @@ import { useToast } from "@/hooks/use-toast";
 import { deleteAccount } from "@/app/actions";
 import { useAuth } from "@/context/auth-context";
 import { useAppearance } from '@/context/appearance-context';
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, MessageSquare } from "lucide-react";
 import Link from 'next/link';
 import packageJson from '../../../package.json';
 
 export function SettingsLayout() {
     const { toast } = useToast();
-    const { logout } = useAuth();
+    const { user, logout } = useAuth();
     const { fontSize, setFontSize } = useAppearance();
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -50,6 +51,8 @@ export function SettingsLayout() {
         }
         setIsDeleting(false);
     }
+
+    const storageUsagePercentage = user && user.storage ? (user.storage.used / user.storage.total) * 100 : 0;
 
     return (
         <div className="flex flex-col h-full bg-background">
@@ -89,6 +92,31 @@ export function SettingsLayout() {
                             </RadioGroup>
                         </div>
                     </CardContent>
+                </Card>
+
+                 <Card className="mt-6">
+                    <CardHeader>
+                        <CardTitle>Storage</CardTitle>
+                        <CardDescription>Manage your cloud storage usage.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        {user && user.storage && (
+                            <div className="space-y-2">
+                                <Progress value={storageUsagePercentage} className="w-full" />
+                                <p className="text-sm text-muted-foreground">
+                                    {user.storage.used}MB of {user.storage.total}MB used
+                                </p>
+                            </div>
+                        )}
+                    </CardContent>
+                    <CardFooter>
+                         <Link href="/?view=support&message=storage" className='w-full'>
+                            <Button className="w-full">
+                                <MessageSquare className="mr-2 h-4 w-4" />
+                                Request More Storage
+                            </Button>
+                        </Link>
+                    </CardFooter>
                 </Card>
 
                 <Card className="mt-6">

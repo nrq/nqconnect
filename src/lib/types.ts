@@ -3,6 +3,10 @@ export interface User {
   name: string;
   avatar: string;
   isOnline: boolean;
+  storage: {
+    used: number; // in MB
+    total: number; // in MB
+  };
 }
 
 export interface Message {

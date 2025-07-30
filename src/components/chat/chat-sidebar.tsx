@@ -33,9 +33,10 @@ interface ChatSidebarProps {
   onSelectChat: (chat: Chat) => void;
   onSelectView: (view: "events" | "support") => void;
   activeChatId?: string;
+  activeView?: "chat" | "events" | "support";
 }
 
-export function ChatSidebar({ chats, onSelectChat, onSelectView, activeChatId }: ChatSidebarProps) {
+export function ChatSidebar({ chats, onSelectChat, onSelectView, activeChatId, activeView }: ChatSidebarProps) {
   const { user, logout } = useAuth();
   const privateChats = chats.filter((chat) => chat.type === 'private');
   const groupChats = chats.filter((chat) => chat.type === 'group');
@@ -67,7 +68,7 @@ export function ChatSidebar({ chats, onSelectChat, onSelectView, activeChatId }:
               <SidebarMenuItem key={chat.id}>
                 <SidebarMenuButton
                   onClick={() => onSelectChat(chat)}
-                  isActive={activeChatId === chat.id}
+                  isActive={activeView === 'chat' && activeChatId === chat.id}
                   className="w-full justify-start"
                 >
                   <Avatar className="h-8 w-8">
@@ -91,7 +92,7 @@ export function ChatSidebar({ chats, onSelectChat, onSelectView, activeChatId }:
               <SidebarMenuItem key={chat.id}>
                 <SidebarMenuButton
                   onClick={() => onSelectChat(chat)}
-                  isActive={activeChatId === chat.id}
+                  isActive={activeView === 'chat' && activeChatId === chat.id}
                   className="w-full justify-start"
                 >
                   <Avatar className="h-8 w-8">
@@ -111,13 +112,13 @@ export function ChatSidebar({ chats, onSelectChat, onSelectView, activeChatId }:
 
           <SidebarGroup>
              <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => onSelectView('events')} className="w-full justify-start">
+                <SidebarMenuButton onClick={() => onSelectView('events')} isActive={activeView === 'events'} className="w-full justify-start">
                   <Bell />
                   Events
                 </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => onSelectView('support')} className="w-full justify-start">
+                <SidebarMenuButton onClick={() => onSelectView('support')} isActive={activeView === 'support'} className="w-full justify-start">
                   <HelpCircle />
                   Support
                 </SidebarMenuButton>

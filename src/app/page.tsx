@@ -4,8 +4,9 @@ import { useAuth } from "@/context/auth-context";
 import ChatLayout from "@/components/chat/chat-layout";
 import { chats } from "@/lib/data";
 import AuthPage from "@/app/auth/page";
+import { Suspense } from "react";
 
-export default function Home() {
+function ChatPageContent() {
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -28,4 +29,12 @@ export default function Home() {
       )}
     </main>
   );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ChatPageContent />
+    </Suspense>
+  )
 }
