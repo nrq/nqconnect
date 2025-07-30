@@ -93,9 +93,35 @@ export function AuthForm() {
 
     async function onPhoneSubmit(values: z.infer<typeof phoneSchema>) {
         setIsLoading(true);
-        generateRecaptcha();
-        
+        const testPhoneNumber = "+1 650-555-3434";
+        const testVerificationCode = "123456";
+
+        if (values.phoneNumber === testPhoneNumber) {
+            console.log("Using test phone number for local development.");
+            // This is a mock confirmation result for testing.
+             window.confirmationResult = {
+                confirm: async (verificationCode: string) => {
+                    if (verificationCode === testVerificationCode) {
+                        return {} as any;
+                    } else {
+                        throw new Error("Invalid test verification code.");
+                    }
+                },
+                verificationId: "mock-verification-id",
+            };
+            otpForm.setValue("otp", testVerificationCode);
+            toast({
+                title: "Test Code Ready",
+                description: `Using test number. Enter ${testVerificationCode} to proceed.`,
+            });
+            setStep("otp");
+            setIsLoading(false);
+            return;
+        }
+
+
         try {
+            generateRecaptcha();
             const verifier = window.recaptchaVerifier!;
             const confirmationResult = await signInWithPhoneNumber(auth, values.phoneNumber, verifier);
             window.confirmationResult = confirmationResult;
@@ -123,16 +149,13 @@ export function AuthForm() {
             if (!confirmationResult) {
                 throw new Error("No confirmation result found. Please try sending the code again.");
             }
-            const result = await confirmationResult.confirm(values.otp);
+            await confirmationResult.confirm(values.otp);
             
-            // The onAuthStateChanged listener in AuthProvider will handle the rest.
-            // It will check if the user has a profile and either log them in or show the details form.
              toast({
                 title: "Verification Successful!",
                 description: "You have been signed in.",
             });
 
-            // We need to give onAuthStateChanged a moment to get the new user and check for a profile
             await reloadUser();
             
         } catch (error: any) {
@@ -194,7 +217,7 @@ export function AuthForm() {
                                     <FormItem>
                                         <FormLabel>Phone Number</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="+15551234567" {...field} />
+                                            <Input placeholder="+1 650-555-3434 (Test Number)" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -248,7 +271,7 @@ export function AuthForm() {
                                             <FormControl>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select your class" />
-                                                </SelectTrigger>
+                                                </Trigger>
                                             </FormControl>
                                             <SelectContent>
                                                 <SelectItem value="hifz-al-quran">Hifz al-Quran (Memorization)</SelectItem>
@@ -284,7 +307,7 @@ export function AuthForm() {
                                             <FormControl>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select your language" />
-                                                </SelectTrigger>
+                                                </Trigger>
                                             </FormControl>
                                             <SelectContent>
                                                 <SelectItem value="English">English</SelectItem>
@@ -341,5 +364,3 @@ export function AuthForm() {
         </Card>
     );
 }
-
-    
