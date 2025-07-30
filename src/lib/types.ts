@@ -11,6 +11,7 @@ export interface User {
   };
   studentId?: string;
   quranClass?: 'hifz-al-quran' | 'tajweed-basics' | 'advanced-tafsir' | 'quranic-arabic';
+  language?: 'English' | 'Urdu' | 'Norwegian' | 'French';
 }
 
 export interface Message {

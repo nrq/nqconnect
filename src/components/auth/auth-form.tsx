@@ -28,6 +28,7 @@ const otpSchema = z.object({
 const detailsSchema = z.object({
     quranClass: z.string().min(1, "Please select a class"),
     studentId: z.string().optional(),
+    language: z.string().min(1, "Please select a language"),
 })
 
 export function AuthForm() {
@@ -54,6 +55,7 @@ export function AuthForm() {
         defaultValues: {
             quranClass: "",
             studentId: "",
+            language: "English",
         },
     });
 
@@ -88,6 +90,7 @@ export function AuthForm() {
         const finalUser = {
             ...defaultUser,
             ...values,
+            language: values.language as any,
         };
         console.log("Saving user details:", finalUser);
         login(finalUser);
@@ -183,6 +186,29 @@ export function AuthForm() {
                                         <FormControl>
                                             <Input placeholder="e.g. NQC-12345" {...field} />
                                         </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={detailsForm.control}
+                                name="language"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Preferred Language</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select your language" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="English">English</SelectItem>
+                                                <SelectItem value="Urdu">Urdu</SelectItem>
+                                                <SelectItem value="Norwegian">Norsk (Norwegian)</SelectItem>
+                                                <SelectItem value="French">Français (French)</SelectItem>
+                                            </SelectContent>
+                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}
