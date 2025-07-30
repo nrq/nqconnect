@@ -25,30 +25,31 @@ export default function ChatLayout({ chats, loggedInUser }: ChatLayoutProps) {
   const viewParam = searchParams.get('view');
   const messageParam = searchParams.get('message');
   
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(chats[0]);
+  const [selectedChat, setSelectedChat] = useState<Chat | null>(chats[0] ?? null);
   const [activeView, setActiveView] = useState<"chat" | "events" | "support" | "admin">("chat");
   const [initialSupportMessage, setInitialSupportMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (viewParam === 'support') {
-      setActiveView('support');
-      setSelectedChat(null);
-      if (messageParam === 'storage') {
-        setInitialSupportMessage('I would like to request more storage.');
-      }
-    } else if (viewParam === 'admin' && loggedInUser.role === 'admin') {
-      setActiveView('admin');
-      setSelectedChat(null);
-    }
-    else {
-        // Default view
-        setActiveView('chat');
-        if (!selectedChat && chats.length > 0) {
-            setSelectedChat(chats[0]);
+    // This effect handles deep-linking, e.g., from an external link or notification.
+    const view = viewParam as "chat" | "events" | "support" | "admin" | null;
+    if (view && view !== activeView) {
+        if (view === 'support') {
+            setActiveView('support');
+            setSelectedChat(null);
+            if (messageParam === 'storage') {
+                setInitialSupportMessage('I would like to request more storage.');
+            }
+        } else if (view === 'admin' && loggedInUser.role === 'admin') {
+            setActiveView('admin');
+            setSelectedChat(null);
+        } else if (view === 'events') {
+            setActiveView('events');
+            setSelectedChat(null);
+        } else {
+            setActiveView('chat');
         }
     }
-  }, [viewParam, messageParam, chats, loggedInUser, selectedChat]);
-
+  }, [viewParam, messageParam, loggedInUser.role, activeView]);
 
   const handleSelectChat = (chat: Chat) => {
     setSelectedChat(chat);
@@ -69,7 +70,7 @@ export default function ChatLayout({ chats, loggedInUser }: ChatLayoutProps) {
             chats={chats} 
             onSelectChat={handleSelectChat} 
             onSelectView={handleSelectView} 
-            activeChatId={selectedChat?.id} 
+            activeChatId={activeView === 'chat' ? selectedChat?.id : undefined} 
             activeView={activeView}
         />
       </Sidebar>
