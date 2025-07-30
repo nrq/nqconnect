@@ -23,6 +23,7 @@ import {
   Moon,
   Sun,
   Settings,
+  Shield,
 } from "lucide-react";
 import type { Chat } from "@/lib/types";
 import { useAuth } from "@/context/auth-context";
@@ -33,9 +34,9 @@ import { Switch } from "@/components/ui/switch";
 interface ChatSidebarProps {
   chats: Chat[];
   onSelectChat: (chat: Chat) => void;
-  onSelectView: (view: "events" | "support") => void;
+  onSelectView: (view: "events" | "support" | "admin") => void;
   activeChatId?: string;
-  activeView?: "chat" | "events" | "support";
+  activeView?: "chat" | "events" | "support" | "admin";
 }
 
 export function ChatSidebar({ chats, onSelectChat, onSelectView, activeChatId, activeView }: ChatSidebarProps) {
@@ -126,6 +127,14 @@ export function ChatSidebar({ chats, onSelectChat, onSelectView, activeChatId, a
                   Support
                 </SidebarMenuButton>
             </SidebarMenuItem>
+             {user.role === 'admin' && (
+              <SidebarMenuItem>
+                  <SidebarMenuButton onClick={() => onSelectView('admin')} isActive={activeView === 'admin'} className="w-full justify-start">
+                    <Shield />
+                    Admin Panel
+                  </SidebarMenuButton>
+              </SidebarMenuItem>
+            )}
             <SidebarMenuItem>
               <Link href="/settings">
                 <SidebarMenuButton className="w-full justify-start">

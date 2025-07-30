@@ -3,19 +3,23 @@ import type { User, Chat, CommunityEvent } from '@/lib/types';
 // This is now a template for new users, not the logged-in user.
 export const defaultUser: User = {
     id: 'user-0',
-    name: 'Youssef',
+    name: 'Youssef (Admin)',
     avatar: 'https://placehold.co/100x100/3CB371/FFFFFF?text=Y',
     isOnline: true,
+    role: 'admin',
+    status: 'active',
     storage: { used: 25, total: 100 },
 };
 
 export const users: User[] = [
-    { id: 'user-1', name: 'Fatima Ahmed', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=FA', isOnline: true, storage: { used: 40, total: 100 } },
-    { id: 'user-2', name: 'Omar Khan', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=OK', isOnline: false, storage: { used: 15, total: 100 } },
-    { id: 'user-3', name: 'Aisha Dubois', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=AD', isOnline: true, storage: { used: 60, total: 100 } },
-    { id: 'user-4', name: 'Mustafa Schmidt', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=MS', isOnline: false, storage: { used: 5, total: 100 } },
-    { id: 'user-5', name: 'Layla Olsen', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=LO', isOnline: true, storage: { used: 80, total: 100 } },
+    { id: 'user-1', name: 'Fatima Ahmed', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=FA', isOnline: true, role: 'user', status: 'active', storage: { used: 40, total: 100 } },
+    { id: 'user-2', name: 'Omar Khan', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=OK', isOnline: false, role: 'user', status: 'active', storage: { used: 15, total: 100 } },
+    { id: 'user-3', name: 'Aisha Dubois', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=AD', isOnline: true, role: 'user', status: 'suspended', storage: { used: 60, total: 100 } },
+    { id: 'user-4', name: 'Mustafa Schmidt', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=MS', isOnline: false, role: 'user', status: 'active', storage: { used: 5, total: 100 } },
+    { id: 'user-5', name: 'Layla Olsen', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=LO', isOnline: true, role: 'user', status: 'active', storage: { used: 80, total: 100 } },
 ];
+
+export const allUsers = [defaultUser, ...users];
 
 export const chats: Chat[] = [
     {
@@ -82,6 +86,3 @@ export const events: CommunityEvent[] = [
         location: 'Islamic Cultural Center'
     }
 ];
-
-// Remove loggedInUser export
-// export const loggedInUser: User = { ... }

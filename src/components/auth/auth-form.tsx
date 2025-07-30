@@ -10,6 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/context/auth-context";
 import { Loader2 } from "lucide-react";
+import { defaultUser } from "@/lib/data";
 
 const phoneRegex = new RegExp(
   /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
@@ -56,12 +57,7 @@ export function AuthForm() {
         // Simulate verifying OTP and logging in
         await new Promise(resolve => setTimeout(resolve, 1500));
         console.log("Verifying OTP:", values.otp);
-        login({
-            id: 'user-0',
-            name: 'Youssef',
-            avatar: 'https://placehold.co/100x100/3CB371/FFFFFF?text=Y',
-            isOnline: true,
-        });
+        login(defaultUser);
         setIsLoading(false);
     }
 

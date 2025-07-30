@@ -12,6 +12,7 @@ import { ChatWindow } from "@/components/chat/chat-window";
 import { EventUpdates } from "@/components/chat/event-updates";
 import { SupportChatbot } from "@/components/chat/support-chatbot";
 import type { Chat, User } from "@/lib/types";
+import { AdminPanel } from "@/components/admin/admin-panel";
 
 interface ChatLayoutProps {
   chats: Chat[];
@@ -24,7 +25,7 @@ export default function ChatLayout({ chats, loggedInUser }: ChatLayoutProps) {
   const messageParam = searchParams.get('message');
   
   const [selectedChat, setSelectedChat] = useState<Chat | null>(chats[0]);
-  const [activeView, setActiveView] = useState<"chat" | "events" | "support">("chat");
+  const [activeView, setActiveView] = useState<"chat" | "events" | "support" | "admin">("chat");
   const [initialSupportMessage, setInitialSupportMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -47,7 +48,7 @@ export default function ChatLayout({ chats, loggedInUser }: ChatLayoutProps) {
     setActiveView("chat");
   };
 
-  const handleSelectView = (view: "events" | "support") => {
+  const handleSelectView = (view: "events" | "support" | "admin") => {
     setActiveView(view);
     setSelectedChat(null);
     // Clear initial message when manually switching
@@ -72,6 +73,8 @@ export default function ChatLayout({ chats, loggedInUser }: ChatLayoutProps) {
           <EventUpdates />
         ) : activeView === 'support' ? (
           <SupportChatbot initialMessage={initialSupportMessage} />
+        ) : activeView === 'admin' ? (
+          <AdminPanel />
         ) : (
           <div className="flex h-full items-center justify-center bg-background">
             <div className="text-center">

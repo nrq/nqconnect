@@ -1,0 +1,100 @@
+
+"use client";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { allUsers } from "@/lib/data";
+import { User } from "@/lib/types";
+import { MoreVertical, ShieldCheck, UserCircle } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+export function AdminPanel() {
+
+  const handleSuspend = (user: User) => {
+    // In a real app, this would trigger a server action
+    alert(`User ${user.name} would be suspended.`);
+  };
+
+  const handleDelete = (user: User) => {
+    // In a real app, this would trigger a server action
+    alert(`User ${user.name} would be deleted.`);
+  };
+
+  return (
+    <div className="flex flex-col h-full bg-background">
+      <div className="p-4 border-b">
+        <h1 className="text-2xl font-headline font-bold">Admin Panel</h1>
+        <p className="text-muted-foreground">User Management</p>
+      </div>
+      <div className="flex-1 overflow-y-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>User</TableHead>
+              <TableHead>Role</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Storage</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {allUsers.map((user) => (
+              <TableRow key={user.id}>
+                <TableCell className="font-medium">{user.name}</TableCell>
+                <TableCell>
+                    <Badge variant={user.role === 'admin' ? 'default' : 'secondary'} className="capitalize">
+                        {user.role === 'admin' ? <ShieldCheck className="mr-1 h-3 w-3"/> : <UserCircle className="mr-1 h-3 w-3" />}
+                        {user.role}
+                    </Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge variant={user.status === 'active' ? 'secondary' : 'destructive'} className="capitalize">
+                    {user.status}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  {user.storage.used}MB / {user.storage.total}MB
+                </TableCell>
+                <TableCell className="text-right">
+                  {user.role !== 'admin' && (
+                     <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => handleSuspend(user)}>
+                          {user.status === 'active' ? 'Suspend' : 'Un-suspend'}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleDelete(user)}
+                          className="text-destructive focus:text-destructive"
+                        >
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
+}

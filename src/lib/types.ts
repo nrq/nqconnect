@@ -3,6 +3,8 @@ export interface User {
   name: string;
   avatar: string;
   isOnline: boolean;
+  role: 'admin' | 'user';
+  status: 'active' | 'suspended';
   storage: {
     used: number; // in MB
     total: number; // in MB
@@ -28,7 +30,7 @@ export interface Chat {
 }
 
 export interface CommunityEvent {
-    id: string;
+    id:string;
     title: string;
     date: string;
     description: string;
