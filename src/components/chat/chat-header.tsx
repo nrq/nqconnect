@@ -155,7 +155,7 @@ export function ChatHeader({ chat }: ChatHeaderProps) {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Report {chat.name}?</AlertDialogTitle>
                         <AlertDialogDescription>
-                           This will flag the conversation for our administrators to review. If a user has violated our community guidelines, we will take appropriate action. Do you want to proceed?
+                           This will flag the conversation for our administrators to review for violations of our community guidelines. Abusing this feature may result in suspension. Do you want to proceed?
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

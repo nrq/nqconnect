@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Table,
   TableBody,
@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { allUsers as initialUsers } from "@/lib/data";
 import { User } from "@/lib/types";
-import { Loader2, MoreVertical, ShieldCheck, UserCircle } from "lucide-react";
+import { Loader2, MoreVertical, ShieldCheck, UserCircle, Users, BarChart, MessageSquare, Database } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,11 +33,67 @@ import {
 } from "@/components/ui/alert-dialog"
 import { useToast } from "@/hooks/use-toast";
 import { suspendUser, deleteUserById } from "@/app/actions";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+function AdminStats({ users }: { users: User[] }) {
+    const stats = useMemo(() => {
+        const totalUsers = users.length;
+        const activeUsers = users.filter(u => u.status === 'active').length;
+        const totalStorage = users.reduce((acc, u) => acc + u.storage.total, 0);
+        const usedStorage = users.reduce((acc, u) => acc + u.storage.used, 0);
+        return { totalUsers, activeUsers, totalStorage, usedStorage };
+    }, [users]);
+
+    return (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 p-4">
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">{stats.totalUsers}</div>
+                    <p className="text-xs text-muted-foreground">All registered users</p>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+                    <UserCircle className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">{stats.activeUsers}</div>
+                    <p className="text-xs text-muted-foreground">{((stats.activeUsers / stats.totalUsers) * 100).toFixed(1)}% of users are active</p>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Storage Usage</CardTitle>
+                    <Database className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">{stats.usedStorage} MB</div>
+                    <p className="text-xs text-muted-foreground">Of {stats.totalStorage} MB total</p>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Reported Chats</CardTitle>
+                    <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">0</div>
+                    <p className="text-xs text-muted-foreground">No pending reports</p>
+                </CardContent>
+            </Card>
+        </div>
+    );
+}
 
 
 export function AdminPanel() {
   const [users, setUsers] = useState<User[]>(initialUsers);
-  const [isLoading, setIsLoading] = useState<string | null>(null); // To track loading state by user ID
+  const [isLoading, setIsLoading] = useState<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const { toast } = useToast();
@@ -98,65 +154,70 @@ export function AdminPanel() {
     <div className="flex flex-col h-full bg-background">
       <div className="p-4 border-b">
         <h1 className="text-2xl font-headline font-bold">Admin Panel</h1>
-        <p className="text-muted-foreground">User Management</p>
+        <p className="text-muted-foreground">User and System Management</p>
       </div>
       <div className="flex-1 overflow-y-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>User</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Storage</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {users.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell className="font-medium">{user.name}</TableCell>
-                <TableCell>
-                    <Badge variant={user.role === 'admin' ? 'default' : 'secondary'} className="capitalize">
-                        {user.role === 'admin' ? <ShieldCheck className="mr-1 h-3 w-3"/> : <UserCircle className="mr-1 h-3 w-3" />}
-                        {user.role}
-                    </Badge>
-                </TableCell>
-                <TableCell>
-                  <Badge variant={user.status === 'active' ? 'secondary' : 'destructive'} className="capitalize">
-                    {user.status}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  {user.storage.used}MB / {user.storage.total}MB
-                </TableCell>
-                <TableCell className="text-right">
-                  {isLoading === user.id ? (
-                    <Loader2 className="h-5 w-5 animate-spin ml-auto" />
-                  ) : user.role !== 'admin' ? (
-                     <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleSuspend(user)}>
-                          {user.status === 'active' ? 'Suspend' : 'Un-suspend'}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => openDeleteDialog(user)}
-                          className="text-destructive focus:text-destructive"
-                        >
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  ) : null}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <AdminStats users={users} />
+        <div className="p-4">
+            <h2 className="text-xl font-bold font-headline mb-2">User Management</h2>
+             <Table>
+                <TableHeader>
+                    <TableRow>
+                    <TableHead>User</TableHead>
+                    <TableHead>Role</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Storage</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {users.map((user) => (
+                    <TableRow key={user.id}>
+                        <TableCell className="font-medium">{user.name}</TableCell>
+                        <TableCell>
+                            <Badge variant={user.role === 'admin' ? 'default' : 'secondary'} className="capitalize">
+                                {user.role === 'admin' ? <ShieldCheck className="mr-1 h-3 w-3"/> : <UserCircle className="mr-1 h-3 w-3" />}
+                                {user.role}
+                            </Badge>
+                        </TableCell>
+                        <TableCell>
+                        <Badge variant={user.status === 'active' ? 'secondary' : 'destructive'} className="capitalize">
+                            {user.status}
+                        </Badge>
+                        </TableCell>
+                        <TableCell>
+                        {user.storage.used}MB / {user.storage.total}MB
+                        </TableCell>
+                        <TableCell className="text-right">
+                        {isLoading === user.id ? (
+                            <Loader2 className="h-5 w-5 animate-spin ml-auto" />
+                        ) : user.role !== 'admin' ? (
+                            <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                <MoreVertical className="h-4 w-4" />
+                                <span className="sr-only">User Actions for {user.name}</span>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={() => handleSuspend(user)}>
+                                {user.status === 'active' ? 'Suspend' : 'Un-suspend'}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                onClick={() => openDeleteDialog(user)}
+                                className="text-destructive focus:text-destructive"
+                                >
+                                Delete
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                            </DropdownMenu>
+                        ) : null}
+                        </TableCell>
+                    </TableRow>
+                    ))}
+                </TableBody>
+                </Table>
+        </div>
       </div>
        <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
