@@ -1,3 +1,4 @@
+
 export interface User {
   id: string;
   name: string;
@@ -12,6 +13,9 @@ export interface User {
   studentId?: string;
   quranClass?: 'hifz-al-quran' | 'tajweed-basics' | 'advanced-tafsir' | 'quranic-arabic';
   language?: 'English' | 'Urdu' | 'Norwegian' | 'French';
+  email?: string;
+  phoneNumber?: string;
+  password?: string;
 }
 
 export interface Message {
