@@ -1,4 +1,4 @@
-'use server';
+// Client-side compatible summarization flow for static export
 
 /**
  * @fileOverview Summarizes a group chat history.
@@ -8,43 +8,23 @@
  * - SummarizeGroupChatOutput - The return type for the summarizeGroupChat function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
-
-const SummarizeGroupChatInputSchema = z.object({
-  chatHistory: z.string().describe('The complete chat history of the group chat.'),
-});
-export type SummarizeGroupChatInput = z.infer<typeof SummarizeGroupChatInputSchema>;
-
-const SummarizeGroupChatOutputSchema = z.object({
-  summary: z.string().describe('A concise summary of the group chat history.'),
-});
-export type SummarizeGroupChatOutput = z.infer<typeof SummarizeGroupChatOutputSchema>;
-
-export async function summarizeGroupChat(input: SummarizeGroupChatInput): Promise<SummarizeGroupChatOutput> {
-  return summarizeGroupChatFlow(input);
+export interface SummarizeGroupChatInput {
+  chatHistory: string;
 }
 
-const prompt = ai.definePrompt({
-  name: 'summarizeGroupChatPrompt',
-  input: {schema: SummarizeGroupChatInputSchema},
-  output: {schema: SummarizeGroupChatOutputSchema},
-  prompt: `You are an AI assistant summarizing a group chat for a user who wants to catch up quickly.
+export interface SummarizeGroupChatOutput {
+  summary: string;
+}
 
-  Please provide a concise summary of the following chat history:
-
-  {{chatHistory}}
-  `,
-});
-
-const summarizeGroupChatFlow = ai.defineFlow(
-  {
-    name: 'summarizeGroupChatFlow',
-    inputSchema: SummarizeGroupChatInputSchema,
-    outputSchema: SummarizeGroupChatOutputSchema,
-  },
-  async input => {
-    const {output} = await prompt(input);
-    return output!;
-  }
-);
+export async function summarizeGroupChat(input: SummarizeGroupChatInput): Promise<SummarizeGroupChatOutput> {
+  // Mock summarization for static export
+  console.log(`[Mock Summarization] Summarizing chat history with ${input.chatHistory.length} characters`);
+  
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  // Return mock summary
+  return {
+    summary: `[Summary] This is a mock summary of the chat history containing ${input.chatHistory.length} characters. The conversation appears to be about various topics and includes multiple participants.`
+  };
+}

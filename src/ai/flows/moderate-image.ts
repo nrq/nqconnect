@@ -1,3 +1,5 @@
+// Client-side compatible image moderation flow for static export
+
 /**
  * @fileOverview An image moderation AI agent.
  *
@@ -6,39 +8,25 @@
  * - ModerateImageOutput - The return type for the moderateImage function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
-
-const ModerateImageInputSchema = z.object({
-  photoDataUri: z
-    .string()
-    .describe(
-      "A photo to moderate, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
-    ),
-});
-export type ModerateImageInput = z.infer<typeof ModerateImageInputSchema>;
-
-const ModerateImageOutputSchema = z.object({
-    isAppropriate: z.boolean().describe('Whether or not the image is appropriate.'),
-    reason: z.string().optional().describe('The reason the image was flagged as inappropriate.'),
-});
-export type ModerateImageOutput = z.infer<typeof ModerateImageOutputSchema>;
-
-export async function moderateImage(_input: ModerateImageInput): Promise<ModerateImageOutput> {
-  return moderateImageFlow(_input);
+export interface ModerateImageInput {
+  photoDataUri: string;
 }
 
-const moderateImageFlow = ai.defineFlow(
-  {
-    name: 'moderateImageFlow',
-    inputSchema: ModerateImageInputSchema,
-    outputSchema: ModerateImageOutputSchema,
-  },
-  async _input => {
-    // This flow is a placeholder and does not perform real moderation.
-    // It's been disabled to reduce operational costs.
-    // The app relies on user reporting for content moderation.
-    console.log("Image moderation is currently disabled. Relying on user reporting.");
-    return { isAppropriate: true };
-  }
-);
+export interface ModerateImageOutput {
+  isAppropriate: boolean;
+  reason?: string;
+}
+
+export async function moderateImage(input: ModerateImageInput): Promise<ModerateImageOutput> {
+  // Mock image moderation for static export
+  console.log(`[Mock Image Moderation] Checking image with ${input.photoDataUri.length} characters`);
+  
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  
+  // Return mock moderation result (always appropriate for demo)
+  return { 
+    isAppropriate: true,
+    reason: "Mock moderation - always approved for demo purposes"
+  };
+}

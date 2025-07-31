@@ -1,4 +1,4 @@
-// Removed 'use server' directive for static export compatibility
+// Client-side compatible translation flow for static export
 
 /**
  * @fileOverview A translation AI agent.
@@ -8,40 +8,25 @@
  * - TranslateMessageOutput - The return type for the translateMessage function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
-
-const TranslateMessageInputSchema = z.object({
-  text: z.string().describe('The text to translate.'),
-  sourceLanguage: z.string().describe('The language of the text to translate.'),
-  targetLanguage: z.string().describe('The language to translate the text into.'),
-});
-export type TranslateMessageInput = z.infer<typeof TranslateMessageInputSchema>;
-
-const TranslateMessageOutputSchema = z.object({
-  translatedText: z.string().describe('The translated text.'),
-});
-export type TranslateMessageOutput = z.infer<typeof TranslateMessageOutputSchema>;
-
-export async function translateMessage(input: TranslateMessageInput): Promise<TranslateMessageOutput> {
-  return translateMessageFlow(input);
+export interface TranslateMessageInput {
+  text: string;
+  sourceLanguage: string;
+  targetLanguage: string;
 }
 
-const prompt = ai.definePrompt({
-  name: 'translateMessagePrompt',
-  input: {schema: TranslateMessageInputSchema},
-  output: {schema: TranslateMessageOutputSchema},
-  prompt: `Translate the following text from {{sourceLanguage}} to {{targetLanguage}}:\n\n{{text}}`,
-});
+export interface TranslateMessageOutput {
+  translatedText: string;
+}
 
-const translateMessageFlow = ai.defineFlow(
-  {
-    name: 'translateMessageFlow',
-    inputSchema: TranslateMessageInputSchema,
-    outputSchema: TranslateMessageOutputSchema,
-  },
-  async input => {
-    const {output} = await prompt(input);
-    return output!;
-  }
-);
+export async function translateMessage(input: TranslateMessageInput): Promise<TranslateMessageOutput> {
+  // Mock translation for static export
+  console.log(`[Mock Translation] Translating: "${input.text}" from ${input.sourceLanguage} to ${input.targetLanguage}`);
+  
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  // Return mock translation
+  return {
+    translatedText: `[Translated] ${input.text} (${input.sourceLanguage} → ${input.targetLanguage})`
+  };
+}
