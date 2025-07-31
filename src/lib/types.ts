@@ -12,7 +12,7 @@ export interface User {
   };
   studentId?: string;
   quranClass?: 'hifz-al-quran' | 'tajweed-basics' | 'advanced-tafsir' | 'quranic-arabic';
-  language?: 'English' | 'Urdu' | 'Norwegian' | 'French';
+  language?: 'English' | 'Urdu' | 'Norwegian' | 'French' | 'German';
   email?: string;
   phoneNumber?: string;
   password?: string;

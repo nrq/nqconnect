@@ -44,48 +44,27 @@ function AdminStats({ users }: { users: User[] }) {
         return { totalUsers, activeUsers, totalStorage, usedStorage };
     }, [users]);
 
+    const statCards = [
+        { title: "Total Users", value: stats.totalUsers, description: "All registered users", icon: Users },
+        { title: "Active Users", value: stats.activeUsers, description: `${stats.totalUsers > 0 ? ((stats.activeUsers / stats.totalUsers) * 100).toFixed(1) : 0}% of users are active`, icon: UserCircle },
+        { title: "Storage Usage", value: `${stats.usedStorage} MB`, description: `Of ${stats.totalStorage} MB total`, icon: Database },
+        { title: "Reported Chats", value: 0, description: "No pending reports", icon: MessageSquare },
+    ]
+
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 p-4">
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold">{stats.totalUsers}</div>
-                    <p className="text-xs text-muted-foreground">All registered users</p>
-                </CardContent>
-            </Card>
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Active Users</CardTitle>
-                    <UserCircle className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold">{stats.activeUsers}</div>
-                    <p className="text-xs text-muted-foreground">{((stats.activeUsers / stats.totalUsers) * 100).toFixed(1)}% of users are active</p>
-                </CardContent>
-            </Card>
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Storage Usage</CardTitle>
-                    <Database className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold">{stats.usedStorage} MB</div>
-                    <p className="text-xs text-muted-foreground">Of {stats.totalStorage} MB total</p>
-                </CardContent>
-            </Card>
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Reported Chats</CardTitle>
-                    <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold">0</div>
-                    <p className="text-xs text-muted-foreground">No pending reports</p>
-                </CardContent>
-            </Card>
+            {statCards.map((card) => (
+                 <Card key={card.title}>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
+                        <card.icon className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{card.value}</div>
+                        <p className="text-xs text-muted-foreground">{card.description}</p>
+                    </CardContent>
+                </Card>
+            ))}
         </div>
     );
 }

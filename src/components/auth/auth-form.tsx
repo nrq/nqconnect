@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/context/auth-context";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { defaultUser, allUsers } from "@/lib/data";
+import { allUsers } from "@/lib/data";
 import { auth, RecaptchaVerifier } from '@/lib/firebase';
 import { ConfirmationResult, signInWithPhoneNumber } from "firebase/auth";
 
@@ -66,43 +66,36 @@ export function AuthForm() {
 
     async function onEmailSubmit(values: z.infer<typeof emailLoginSchema>) {
         setIsLoading(true);
-        const MOCK_EMAIL = "admin@nqsalam.app";
-        const MOCK_PASSWORD = "password";
+        const user = allUsers.find(u => u.email === values.email && u.password === values.password);
 
-        if (values.email === MOCK_EMAIL && values.password === MOCK_PASSWORD) {
+        if (user) {
             toast({
                 title: "Login Successful",
-                description: `Welcome back, ${defaultUser.name}!`,
+                description: `Welcome back, ${user.name}!`,
             });
-            login(defaultUser);
+            login(user);
         } else {
-            const regularUser = allUsers.find(u => u.email === values.email && u.password === 'password');
-             if (regularUser) {
-                toast({
-                    title: "Login Successful",
-                    description: `Welcome back, ${regularUser.name}!`,
-                });
-                login(regularUser);
-            } else {
-                toast({
-                    variant: "destructive",
-                    title: "Login Failed",
-                    description: "The email or password you entered is incorrect.",
-                });
-            }
+            toast({
+                variant: "destructive",
+                title: "Login Failed",
+                description: "The email or password you entered is incorrect.",
+            });
         }
         setIsLoading(false);
     }
 
     async function onPhoneSubmit(values: z.infer<typeof phoneLoginSchema>) {
         setIsLoading(true);
-        const MOCK_PHONE = "+11234567890"; // Test phone number
+        const MOCK_PHONE = "+11234567890"; // Test phone number for Layla Olsen
 
-        if (values.phone !== MOCK_PHONE) {
-            toast({
+        // Allow any of the mock phone numbers for testing
+        const existingUser = allUsers.find(u => u.phoneNumber === values.phone);
+
+        if (!existingUser) {
+             toast({
                 variant: "destructive",
                 title: "Login Failed",
-                description: "This phone number is not registered for the prototype. Use +11234567890.",
+                description: `This phone number is not registered for the prototype. Use a number from the mock data, e.g., ${MOCK_PHONE}.`,
             });
             setIsLoading(false);
             return;
@@ -133,9 +126,11 @@ export function AuthForm() {
         setIsLoading(true);
         try {
             const result = await confirmationResult.confirm(values.otp);
-            const user = result.user;
+            const firebaseUser = result.user;
             // Find mock user by phone number
-            const loggedInUser = allUsers.find(u => u.phoneNumber === user.phoneNumber) || defaultUser;
+            const loggedInUser = allUsers.find(u => u.phoneNumber === firebaseUser.phoneNumber);
+            if (!loggedInUser) throw new Error("User profile not found in mock data.");
+
             toast({
                 title: "Login Successful",
                 description: `Welcome back, ${loggedInUser.name}!`,
@@ -204,9 +199,9 @@ export function AuthForm() {
     );
     
     return (
-        <>
-            <div id="recaptcha-container"></div>
-            <Card>
+        <div className="flex items-center justify-center min-h-screen bg-background">
+            <div id="recaptcha-container" className="absolute bottom-0"></div>
+            <Card className="w-full max-w-md mx-4">
                 <CardHeader>
                     <CardTitle className="font-headline text-2xl">
                         Welcome to NQSalam
@@ -263,7 +258,7 @@ export function AuthForm() {
                     </Tabs>
                 </CardContent>
             </Card>
-        </>
+        </div>
     );
 }
 

@@ -10,16 +10,16 @@ export const defaultUser: User = {
     status: 'active',
     storage: { used: 25, total: 100 },
     language: 'English',
-    // studentId: 'NQC-001', // Example for existing user
-    // quranClass: 'advanced-tafsir' // Example for existing user
+    email: 'admin@nqsalam.app',
+    password: 'password'
 };
 
 export const users: User[] = [
-    { id: 'user-1', name: 'Fatima Ahmed', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=FA', isOnline: true, role: 'user', status: 'active', storage: { used: 40, total: 100 }, studentId: 'NQC-101', quranClass: 'hifz-al-quran', language: 'Urdu' },
-    { id: 'user-2', name: 'Omar Khan', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=OK', isOnline: false, role: 'user', status: 'active', storage: { used: 15, total: 100 }, studentId: 'NQC-102', quranClass: 'tajweed-basics', language: 'French' },
-    { id: 'user-3', name: 'Aisha Dubois', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=AD', isOnline: true, role: 'user', status: 'suspended', storage: { used: 60, total: 100 }, studentId: 'NQC-103', quranClass: 'quranic-arabic', language: 'French' },
-    { id: 'user-4', name: 'Mustafa Schmidt', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=MS', isOnline: false, role: 'user', status: 'active', storage: { used: 5, total: 100 }, studentId: 'NQC-104', quranClass: 'hifz-al-quran', language: 'English' },
-    { id: 'user-5', name: 'Layla Olsen', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=LO', isOnline: true, role: 'user', status: 'active', storage: { used: 80, total: 100 }, studentId: 'NQC-105', quranClass: 'advanced-tafsir', language: 'Norwegian' },
+    { id: 'user-1', name: 'Fatima Ahmed', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=FA', isOnline: true, role: 'user', status: 'active', storage: { used: 40, total: 100 }, studentId: 'NQC-101', quranClass: 'hifz-al-quran', language: 'Urdu', email: 'fatima@nqsalam.app', password: 'password', phoneNumber: '+11234567891' },
+    { id: 'user-2', name: 'Omar Khan', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=OK', isOnline: false, role: 'user', status: 'active', storage: { used: 15, total: 100 }, studentId: 'NQC-102', quranClass: 'tajweed-basics', language: 'French', email: 'omar@nqsalam.app', password: 'password', phoneNumber: '+11234567892' },
+    { id: 'user-3', name: 'Aisha Dubois', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=AD', isOnline: true, role: 'user', status: 'suspended', storage: { used: 60, total: 100 }, studentId: 'NQC-103', quranClass: 'quranic-arabic', language: 'French', email: 'aisha@nqsalam.app', password: 'password', phoneNumber: '+11234567893' },
+    { id: 'user-4', name: 'Mustafa Schmidt', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=MS', isOnline: false, role: 'user', status: 'active', storage: { used: 5, total: 100 }, studentId: 'NQC-104', quranClass: 'hifz-al-quran', language: 'German', email: 'mustafa@nqsalam.app', password: 'password', phoneNumber: '+11234567894' },
+    { id: 'user-5', name: 'Layla Olsen', avatar: 'https://placehold.co/100x100/D4AF37/000000?text=LO', isOnline: true, role: 'user', status: 'active', storage: { used: 80, total: 100 }, studentId: 'NQC-105', quranClass: 'advanced-tafsir', language: 'Norwegian', email: 'layla@nqsalam.app', password: 'password', phoneNumber: '+11234567890' },
 ];
 
 export const allUsers = [defaultUser, ...users];
