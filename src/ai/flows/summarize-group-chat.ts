@@ -1,4 +1,6 @@
-// Client-side compatible summarization flow for static export
+'use server';
+
+// Server-side summarization flow for Firebase App Hosting
 
 /**
  * @fileOverview Summarizes a group chat history.
@@ -17,8 +19,8 @@ export interface SummarizeGroupChatOutput {
 }
 
 export async function summarizeGroupChat(input: SummarizeGroupChatInput): Promise<SummarizeGroupChatOutput> {
-  // Mock summarization for static export
-  console.log(`[Mock Summarization] Summarizing chat history with ${input.chatHistory.length} characters`);
+  // For now, using mock summarization until real AI is configured
+  console.log(`[Server Summarization] Summarizing chat history with ${input.chatHistory.length} characters`);
   
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1000));

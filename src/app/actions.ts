@@ -1,5 +1,4 @@
-
-// Removed 'use server' directive for static export compatibility
+'use server';
 
 import { translateMessage, TranslateMessageInput } from "@/ai/flows/translate-message";
 import { summarizeGroupChat, SummarizeGroupChatInput } from "@/ai/flows/summarize-group-chat";

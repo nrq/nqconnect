@@ -1,4 +1,6 @@
-// Client-side compatible translation flow for static export
+'use server';
+
+// Server-side translation flow for Firebase App Hosting
 
 /**
  * @fileOverview A translation AI agent.
@@ -19,8 +21,8 @@ export interface TranslateMessageOutput {
 }
 
 export async function translateMessage(input: TranslateMessageInput): Promise<TranslateMessageOutput> {
-  // Mock translation for static export
-  console.log(`[Mock Translation] Translating: "${input.text}" from ${input.sourceLanguage} to ${input.targetLanguage}`);
+  // For now, using mock translation until real AI is configured
+  console.log(`[Server Translation] Translating: "${input.text}" from ${input.sourceLanguage} to ${input.targetLanguage}`);
   
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1000));

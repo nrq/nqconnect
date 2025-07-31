@@ -1,4 +1,6 @@
-// Client-side compatible image moderation flow for static export
+'use server';
+
+// Server-side image moderation flow for Firebase App Hosting
 
 /**
  * @fileOverview An image moderation AI agent.
@@ -18,8 +20,8 @@ export interface ModerateImageOutput {
 }
 
 export async function moderateImage(input: ModerateImageInput): Promise<ModerateImageOutput> {
-  // Mock image moderation for static export
-  console.log(`[Mock Image Moderation] Checking image with ${input.photoDataUri.length} characters`);
+  // For now, using mock moderation until real AI is configured
+  console.log(`[Server Image Moderation] Checking image with ${input.photoDataUri.length} characters`);
   
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 500));
