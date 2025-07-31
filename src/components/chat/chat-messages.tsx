@@ -24,17 +24,14 @@ export function ChatMessages({ messages, loggedInUser, chatParticipants }: ChatM
   return (
     <ScrollArea className="flex-1" ref={scrollAreaRef}>
       <div className="p-6 space-y-6">
-        {messages.map((message, index) => {
-          const sender = chatParticipants.find(p => p.id === message.senderId);
-          return (
-            <ChatMessage
-              key={message.id}
-              message={message}
-              sender={sender}
-              isOwnMessage={message.senderId === loggedInUser.id}
-            />
-          );
-        })}
+        {messages.map((message) => (
+          <ChatMessage
+            key={message.id}
+            message={message}
+            isOwnMessage={message.senderId === loggedInUser.id}
+            sender={chatParticipants.find(p => p.id === message.senderId)}
+          />
+        ))}
       </div>
     </ScrollArea>
   );

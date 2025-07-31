@@ -2,12 +2,12 @@ import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
-  output: 'export',
+  output: 'export', // Static export for Firebase hosting
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false, // Enable TypeScript checking
   },
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: true, // Temporarily disable ESLint for Firebase deployment
   },
   images: {
     unoptimized: true,
@@ -20,6 +20,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Remove trailing slash for static export
+  trailingSlash: false,
 };
 
 export default nextConfig;

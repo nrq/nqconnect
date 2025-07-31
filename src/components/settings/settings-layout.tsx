@@ -106,7 +106,7 @@ export function SettingsLayout() {
                     <CardContent className="space-y-4">
                          <div>
                             <p className="font-medium mb-2">Font Size</p>
-                            <RadioGroup defaultValue={fontSize} onValueChange={(value) => setFontSize(value as any)}>
+                            <RadioGroup defaultValue={fontSize} onValueChange={(value) => setFontSize(value as 'sm' | 'base' | 'lg')}>
                                 <div className="flex items-center space-x-2">
                                     <RadioGroupItem value="sm" id="font-sm" />
                                     <Label htmlFor="font-sm">Small</Label>

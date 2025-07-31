@@ -1,13 +1,13 @@
 
 "use client";
 
-import { useState } from 'react';
-import type { Chat, User, Message } from "@/lib/types";
-import { ChatHeader } from "@/components/chat/chat-header";
-import { ChatMessages } from "@/components/chat/chat-messages";
-import { ChatInput } from "@/components/chat/chat-input";
+import { useState } from "react";
+import { ChatHeader } from "./chat-header";
+import { ChatInput } from "./chat-input";
+import { ChatMessages } from "./chat-messages";
 import { sendMessage } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
+import type { Chat, User } from "@/lib/types";
 
 interface ChatWindowProps {
   chat: Chat;

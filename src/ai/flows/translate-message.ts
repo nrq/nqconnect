@@ -1,8 +1,7 @@
-// This file implements the Genkit flow for translating messages between users.
-'use server';
+// Removed 'use server' directive for static export compatibility
 
 /**
- * @fileOverview A message translation AI agent.
+ * @fileOverview A translation AI agent.
  *
  * - translateMessage - A function that handles the message translation process.
  * - TranslateMessageInput - The input type for the translateMessage function.

@@ -110,12 +110,13 @@ export function AuthForm() {
                 title: "Verification Code Sent",
                 description: "Please enter the 6-digit code sent to your phone.",
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("SMS Auth Error:", error);
+            const errorMessage = error instanceof Error ? error.message : "Failed to send verification code. Please try again.";
             toast({
                 variant: "destructive",
                 title: "Error",
-                description: error.message || "Failed to send verification code. Please try again.",
+                description: errorMessage,
             });
         }
         setIsLoading(false);
@@ -136,7 +137,7 @@ export function AuthForm() {
                 description: `Welcome back, ${loggedInUser.name}!`,
             });
             login(loggedInUser);
-        } catch (error: any) {
+        } catch (error: unknown) {
              console.error("OTP Confirmation Error:", error);
             toast({
                 variant: "destructive",

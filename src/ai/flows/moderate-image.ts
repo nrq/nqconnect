@@ -1,5 +1,3 @@
-'use server';
-
 /**
  * @fileOverview An image moderation AI agent.
  *
@@ -26,8 +24,8 @@ const ModerateImageOutputSchema = z.object({
 });
 export type ModerateImageOutput = z.infer<typeof ModerateImageOutputSchema>;
 
-export async function moderateImage(input: ModerateImageInput): Promise<ModerateImageOutput> {
-  return moderateImageFlow(input);
+export async function moderateImage(_input: ModerateImageInput): Promise<ModerateImageOutput> {
+  return moderateImageFlow(_input);
 }
 
 const moderateImageFlow = ai.defineFlow(
@@ -36,7 +34,7 @@ const moderateImageFlow = ai.defineFlow(
     inputSchema: ModerateImageInputSchema,
     outputSchema: ModerateImageOutputSchema,
   },
-  async input => {
+  async _input => {
     // This flow is a placeholder and does not perform real moderation.
     // It's been disabled to reduce operational costs.
     // The app relies on user reporting for content moderation.

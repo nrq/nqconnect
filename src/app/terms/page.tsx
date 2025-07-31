@@ -32,7 +32,7 @@ export default function TermsPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <p>Welcome to NQSalam!</p>
-            <p>These terms and conditions outline the rules and regulations for the use of NQSalam's Website, located at nqsalam.app.</p>
+            <p>These terms and conditions outline the rules and regulations for the use of NQSalam&apos;s Website, located at nqsalam.app.</p>
             <p>By accessing this website we assume you accept these terms and conditions. Do not continue to use NQSalam if you do not agree to take all of the terms and conditions stated on this page.</p>
             <h2 className="text-xl font-bold">License</h2>
             <p>Unless otherwise stated, NQSalam and/or its licensors own the intellectual property rights for all material on NQSalam. All intellectual property rights are reserved. You may access this from NQSalam for your own personal use subjected to restrictions set in these terms and conditions.</p>

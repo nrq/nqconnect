@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { allUsers as initialUsers } from "@/lib/data";
 import { User } from "@/lib/types";
-import { Loader2, MoreVertical, ShieldCheck, UserCircle, Users, BarChart, MessageSquare, Database } from "lucide-react";
+import { Loader2, MoreVertical, ShieldCheck, UserCircle, Users, MessageSquare, Database } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -203,7 +203,7 @@ export function AdminPanel() {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete {selectedUser?.name}'s account.
+              This action cannot be undone. This will permanently delete {selectedUser?.name}&apos;s account.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
